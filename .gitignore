@@ -1,0 +1,7 @@
+.idea/
+node_modules/
+public/
+package-lock.json
+.cache/
+build/
+public/
