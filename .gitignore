@@ -5,3 +5,6 @@ package-lock.json
 .cache/
 build/
 public/
+ssh.sh
+scratch/
+

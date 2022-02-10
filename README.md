@@ -31,15 +31,13 @@ AWS Cloud9 environment.
 
 1. Clone the repository to your laptop 
 1. Verify your environment is ready to connect to your AWS account by running
-```aws sts get-caller-identity```  
-and ```aws dynamodb list-tables```
+```aws sts get-caller-identity```  and ```aws dynamodb list-tables```
 1. Open a shell terminal, navigate into the [app](./app/) 
 folder, and type ```npm run dev```
 1. Navigate to http://localhost:3000 to open the app.
 1. Choose one of the regions listed, 
 or you can choose localhost:8000 to use DynamoDB Local.
-1. A grid with rows and columns should appear.  
-Notice the column headers are sortable.
+1. A grid with rows and columns should appear.  Notice the column headers are sortable.
 1. Review the final columns which calculate and compare the 
 monthly table costs in Standard and Infrequent Access (IA) modes.
 1. If a table may benefit from IA, the monthly savings will be shown in green.
