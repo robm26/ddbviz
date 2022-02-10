@@ -3,6 +3,7 @@
 A webapp to visualize your DynamoDB tables and table data, 
 with a focus on cost optimization.
 
+![screenshot](https://dynamodb-images.s3.amazonaws.com/img/dv1.png)
 
 ## Features
 
