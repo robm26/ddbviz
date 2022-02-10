@@ -1,0 +1,63 @@
+.rootContainer {
+    background-color:whitesmoke;
+    border:2px solid silver;
+    border-radius:6px;
+    padding:5px;
+    font-family:Arial;
+}
+
+.menuContainer {
+    background-color:silver;
+    padding:7px;
+    border-radius:5px;
+
+}
+
+
+.menuContainer ul {
+    list-style-type: none;
+    margin: 0;
+    padding:0;
+    overflow: hidden;
+}
+
+.menuContainer li {
+    float:left;
+    padding-left: 4px;
+    padding-right: 6px;
+}
+
+.subMenu {
+    background-color:gainsboro;
+    padding:5px;
+    border-radius:5px;
+}
+
+.homeLink {
+    font-size: 22px;
+    color: blue;
+
+}
+.regionWord {
+
+    color:grey;
+}
+.regionLink {
+    color:dimgray;
+    text-decoration:none;
+ }
+
+.regionLinkSelected {
+    font-weight:bold;
+    color:green;
+    text-decoration:none;
+}
+
+.spinner {
+    float:right;
+    margin-top:0px;
+}
+
+a {
+    text-decoration:none;
+}

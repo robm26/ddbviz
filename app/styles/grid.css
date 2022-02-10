@@ -1,0 +1,80 @@
+
+#gridform table {
+    background-color:whitesmoke;
+    border-radius:7px;
+}
+
+#gridform table button {
+    border:none;
+    width:100%;
+    color:dimgrey;
+    padding-left:5px;
+    padding-right:5px;
+
+}
+
+#gridform table button:hover {
+    color:navy;
+    background-color:gainsboro;
+}
+
+#gridform table th {
+    font-size: larger;
+    font-weight: normal;
+    text-decoration:none;
+
+}
+
+#gridform td {
+
+    background-color: gainsboro;
+    padding:5px;
+    color:gray;
+}
+
+.monthlyLabel {
+    background-color: #d6fbd8;
+    horiz-align: center;
+    font-style: italic;
+    color:darkgreen;
+    font-size:10pt;
+    width:100%;
+}
+
+#gridform .StorageCostStd {
+    background-color:#D0D0D0;
+}
+#gridform .StorageCostIA {
+
+}
+#gridform .ReadCostStd {
+    background-color:#D0D0D0;
+}
+#gridform .ReadCostIA {
+
+}
+#gridform .WriteCostStd {
+    background-color:#D0D0D0;
+}
+#gridform .WriteCostIA {
+
+}
+#gridform .TotalCostStd {
+    background-color:#C9C9C9;
+    color:black;
+}
+#gridform .TotalCostIA {
+    background-color:#C9C9C9;
+    color:black;
+}
+
+#gridform .DeltaIA_neg {
+    background-color:gray;
+    color:limegreen;
+    font-weight:bold;
+}
+
+#gridform .DeltaIA_pos {
+    background-color:gray;
+    color:white;
+}
