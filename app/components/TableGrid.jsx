@@ -195,7 +195,7 @@ export function TableGrid(props) {
 }
 
 function rounder(val) {
-    if(val === 0) {return '-';}
+    if(Math.abs(val) === 0 || Math.abs(val) < 0.0001) {return '-';}
 
     let places = 2;
 
