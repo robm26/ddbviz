@@ -34,7 +34,7 @@ AWS Cloud9 environment.
 1. Open a shell terminal. Verify your environment is ready to connect to your AWS account by running
 ```aws sts get-caller-identity```  and ```aws dynamodb list-tables```
 1. Navigate into the [app](./app/) 
-folder, and type ```npm run dev```
+folder, and type ```npm install``` then ```npm run dev```
   * If you are running in Cloud9, instead run ```PORT=8080 npm run dev``` as the Cloud9 web preview requires this port.
 1. Navigate to http://localhost:3000 to open the app.
 1. Choose one of the regions listed, 
