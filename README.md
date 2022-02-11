@@ -34,8 +34,14 @@ AWS Cloud9 environment.
 1. Open a shell terminal. Verify your environment is ready to connect to your AWS account by running
 ```aws sts get-caller-identity```  and ```aws dynamodb list-tables```
 1. Navigate into the [app](./app/) 
-folder, and type ```npm install``` then ```npm run dev```
-  * If you are running in Cloud9, instead run ```PORT=8080 npm run dev``` as the Cloud9 web preview requires this port.
+folder, and type ```npm install``` to install remix and required node modules.
+1. Run ```npm run dev```
+
+    | :information_source: Profiles and Ports     |
+    |:---------------------------|
+    | The default AWS profile will be used unless you set this environment variable: ```export AWS_PROFILE=myprofile``` |
+    | Cloud9 users may set port 8080 so the Preview browser works: ```PORT=8080 npm run dev```   |
+
 1. Navigate to http://localhost:3000 to open the app.
 1. Choose one of the regions listed, 
 or you can choose localhost:8000 to use DynamoDB Local.
