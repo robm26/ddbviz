@@ -33,7 +33,6 @@ export async function handler(event) {
     if(IndexName) {
         params.IndexName = IndexName;
     }
-    // console.log(params);
 
     const stats = {
         Count:0,
@@ -103,6 +102,7 @@ export async function handler(event) {
         if(ActionName === 'get') {
             params = {
                 TableName: TableName,
+                ReturnConsumedCapacity:'TOTAL',
                 Key: {}
             };
             params.Key[PkName] = {'S':PkValue};
@@ -113,8 +113,6 @@ export async function handler(event) {
             results = await client.send(new GetItemCommand(params));
 
         }
-
-        // console.log('**************************** executed ' + ActionName + ', RCC: ' + results.ConsumedCapacity.CapacityUnits);
 
         return results;
 

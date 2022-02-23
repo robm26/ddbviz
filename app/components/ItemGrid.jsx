@@ -8,6 +8,8 @@ export const action = async ({request}) => {
     return null;
 };
 
+const sortColor1 = 125;
+const sortColor2 = 55;
 
 export function ItemGrid(props) {
     const data = useLoaderData();
@@ -43,30 +45,41 @@ export function ItemGrid(props) {
     const PkName = ks[0].AttributeName;
     const SkName = ks.length > 1 ? ks[1].AttributeName : null;
 
+
+    const [sortAttr, setSortAttr] = React.useState('collectionIndex');
+    const [sortDirection, setSortDirection] = React.useState('1');
+
+    const sortSorter = (sa) => {
+        if(sa === sortAttr) {
+            setSortDirection(sortDirection * -1);
+        }
+        setSortAttr(sa);
+    };
+
     let collectionNumber = 1;
     let collectionIndex = 1;
-
-    const sortColor1 = 125;
-    const sortColor2 = 55;
-
 
     let currentPK;
     let prevPK;
 
+    const summary = [];
+
     const [displayMode, setDisplayMode] = React.useState('raw');  // schemaless, grid, summary
 
     const toggleDisplayMode = () => {
-        if (displayMode === 'summary') {
-            setDisplayMode('raw' );
+        if(displayMode === 'raw') {
+            setDisplayMode('grid');
         } else {
-
-            if(displayMode === 'raw' || displayMode !== 'summary') {
-                setDisplayMode('grid');
-            } else {
-                setDisplayMode('raw' );
-            }
+            setDisplayMode('raw');
         }
+    };
 
+    const toggleSummary = () => {
+        if(displayMode === 'raw' || displayMode === 'grid') {
+            setDisplayMode('summary');
+        } else {
+            setDisplayMode('raw');
+        }
     };
 
 
@@ -74,14 +87,14 @@ export function ItemGrid(props) {
     if(displayMode === 'grid') {
         arrangedItems = makeGrid(items);
 
-    } else {
+    } else if(displayMode === 'raw' || displayMode === 'summary') {
         arrangedItems = items;
     }
 
     let tableHeaders;
     if(displayMode === 'raw') {
-        tableHeaders = (<tr><th className="pkHeader">{PkName}</th><th className="skHeader">{SkName}</th></tr>);
-    } else {
+        tableHeaders = (<tr><th >{PkName}</th><th >{SkName}</th></tr>);
+    } else if(displayMode === 'grid') {
 
         const tableHeaderVals = Object.keys(arrangedItems[0]).map((attr)=>{
             if(![PkName, SkName].includes(attr)) {
@@ -90,14 +103,22 @@ export function ItemGrid(props) {
 
         });
 
-        tableHeaders = (<tr>
-            <th>{PkName}</th>
-            {SkName ? (<th>{SkName}</th>) : null }
-
+        tableHeaders = (<tr><th>{PkName}</th>{SkName ? (<th>{SkName}</th>) : null }
             {tableHeaderVals}
         </tr>);
 
+    } else {
+        tableHeaders = (<tr>
+            <th><button onClick={()=>{sortSorter('pk')}}>{PkName}</button></th>
+            <th><button >{SkName} min</button></th>
+            <th><button >{SkName} max</button></th>
+            <th><button onClick={()=>{sortSorter('collectionIndex')}}>item count</button></th>
+        </tr>);
     }
+
+
+    let skMin = '';
+    let skMax = '';
 
     const rows = arrangedItems.map((item, rowIndex)=> {
         let collectionFinalItem = 0;
@@ -127,11 +148,13 @@ export function ItemGrid(props) {
             if(items[rowIndex][PkName]['S'] !== items[rowIndex+1][PkName]['S']) {
                 pkedges += 'last';
                 collectionFinalItem = 1;
+
             }
         }
 
         if(rowIndex === items.length - 1) {
             pkedges += 'last';
+            collectionFinalItem = 1;
 
         }
 
@@ -151,46 +174,65 @@ export function ItemGrid(props) {
         }
         attrList.unshift(PkName);
 
-
         const basePK =  item[pkNameBase][Object.keys(item[pkNameBase])[0]];
 
-        return (<tr key={rowIndex}>
+        let pkValue;
+
+        const tableRow = (<tr key={rowIndex}>
             {attrList.map((attr, cellIndex)=>{
 
-                        let cellValue = item[attr][Object.keys(item[attr])[0]];
+                    let cellValue = item[attr][Object.keys(item[attr])[0]];
 
-                        const displayBytesMax = config().displayBytesMax;
+                    const displayBytesMax = config().displayBytesMax;
 
-                        let cellDisplay = (typeof cellValue === 'object' ? JSON.stringify(cellValue) : cellValue);
+                    let cellDisplay = (typeof cellValue === 'object' ? JSON.stringify(cellValue) : cellValue);
 
-                        let cellMore;
+                    let cellMore;
 
-                        if(cellDisplay.length > displayBytesMax) {
-                            const remainingBytes = cellDisplay.length - displayBytesMax;
-                            cellMore = '... + ' + (remainingBytes > 2048 ? Math.round(remainingBytes/1024) + ' KB'  : remainingBytes + ' bytes');
+                    if(cellDisplay.length > displayBytesMax) {
+                        const remainingBytes = cellDisplay.length - displayBytesMax;
+                        cellMore = '... + ' + (remainingBytes > 2048 ? Math.round(remainingBytes/1024) + ' KB'  : remainingBytes + ' bytes');
 
-                            cellDisplay = cellDisplay.substring(0, displayBytesMax);
-                        }
+                        cellDisplay = cellDisplay.substring(0, displayBytesMax);
+                    }
 
-                        let cell;
-
-                        if(attr === PkName) {  // the first PK cell
-
-                            const stripe = indexName ? 'gsipk' : 'pk';
-
-                            const pkAction = (SkName || indexName ? 'query' : 'get');
+                    let cell;
 
 
-                            cell = (<td key={cellIndex} className="tdPK" pkedges={pkedges} stripe={stripe + collectionNumber%2}>
+                    if(attr === PkName) {  // the first PK cell
+
+                        pkValue = cellValue;
+
+                        const stripe = indexName ? 'gsipk' : 'pk';
+
+                        const pkAction = (SkName || indexName ? 'query' : 'get');
+
+
+                        cell = (<td key={cellIndex} className="tdPK" pkedges={pkedges} stripe={stripe + collectionNumber%2}>
                                 <span >
                                     <Link to={'/' + region + '/' + table + '/' + pkAction + '/' + encodeURIComponent(cellValue)} >
                                         {cellValue}</Link>
                                 </span>
-                            </td>);
+                        </td>);
 
-                        } else if (attr === SkName) { // the second SK cell
-                            const skStyle = {
-                            };
+                    } else if (attr === SkName) { // the second SK cell
+                        if(displayMode === 'summary') {
+                            if(collectionIndex === 1) {
+                                skMin = cellValue;
+                                skMax = cellValue;
+                            } else {
+                                if(cellValue < skMin) {
+                                    skMin = cellValue;
+                                }
+                                if(cellValue > skMax) {
+                                    skMax = cellValue;
+                                }
+                            }
+
+                            cell = null;
+
+                        } else {
+                            const skStyle = {};
                             skStyle.backgroundColor = sortKeyGradient(collectionIndex, indexName ? sortColor2 : sortColor1);
 
                             const skAction = (indexName ? 'query' : 'get');
@@ -202,8 +244,16 @@ export function ItemGrid(props) {
                                     </Link>
                                 </span>
                             </td>);
+                        }
 
-                        } else {            // all other cells
+
+                    } else {            // all other cells
+                        if(displayMode === 'summary') {
+                            cell = null;
+
+                        } else {
+
+
                             let cellText;
 
                             if(typeof cellValue === 'object') {
@@ -222,30 +272,51 @@ export function ItemGrid(props) {
                             cell = (<td key={cellIndex} final={collectionFinalItem === 1 ? 'final' : null}>
 
                                 {displayMode === 'grid' ? null : (<span className="cellName">
-                                   {attr}
-                                </span>)}
+                                       {attr}
+                                    </span>)}
 
                                 <span className="cellValue">
-                                    {cellText}
-
-                                </span>
+                                        {cellText}
+                                    </span>
                             </td>);
 
                         }
 
-                        return(cell);
-
                     }
-                )
+
+                    return(cell);
+
+                }
+            )
             }
+
         </tr>);
 
+
+        if(displayMode === 'summary' && collectionFinalItem !== 1) {
+            return null;
+        }
+
+        summary.push({pk:pkValue, skMin:skMin, skMax:skMax,collectionIndex:collectionIndex});
+
+        return tableRow;
+
     });
+
+    let displayRows;
+    if(displayMode === 'summary') {
+        displayRows = columnSorted(summary, indexName, sortAttr, sortDirection);
+    } else {
+        displayRows = rows;
+    }
 
     const itemTableControls = (
         <>
             <button onClick={toggleDisplayMode}>{(displayMode === 'grid' ? 'raw' : 'grid').toUpperCase()}</button>
-            <button onClick={toggleDisplayMode}>{(displayMode === 'summary' ? 'raw' : 'summary').toUpperCase()}</button>
+
+            {data?.params?.action === 'scan' && SkName ? (
+                <button onClick={toggleSummary}>{(displayMode === 'summary' ? 'raw' : 'summary').toUpperCase()}</button>
+            ) : null}
 
         </>
     );
@@ -255,15 +326,76 @@ export function ItemGrid(props) {
             <div className="itemTableControls">
                 {itemTableControls}
             </div>
-        <table className="itemTable">
-            <thead>
-            {tableHeaders}
-            </thead>
-            <tbody>{rows}</tbody>
-        </table>
+            <table className="itemTable">
+                <thead>
+                {tableHeaders}
+                </thead>
+                <tbody>{displayRows}</tbody>
+            </table>
         </div>);
 
     return (<Form id="itemgridform" method="post" >{tab}</Form>);
+
+}
+
+function columnSorted(items, indexName, sortAttr, sortDirection) {
+
+    let sortedRows = [...items];
+
+    sortedRows.sort((a,b)=> {
+        const x = typeof a[sortAttr] === 'string' ? a[sortAttr].toUpperCase() : a[sortAttr];
+        const y = typeof b[sortAttr] === 'string' ? b[sortAttr].toUpperCase() : b[sortAttr];
+        if (x > y) {return -1 * sortDirection;}
+        if (x < y) {return 1 * sortDirection;}
+        return 0;
+    });
+
+    let maxItemCount = 0;
+    sortedRows.map((row)=>{
+        if(row?.collectionIndex > maxItemCount) {
+            maxItemCount = row?.collectionIndex;
+        }
+    });
+
+    const rows = sortedRows.map((item, itemIndex)=>{
+
+        const skStyle = {};
+        skStyle.backgroundColor = sortKeyGradient(1, indexName ? sortColor2 : sortColor1);
+        skStyle.padding = '8px';
+        const skStyle2 = {};
+        skStyle2.backgroundColor = sortKeyGradient(2, indexName ? sortColor2 : sortColor1);
+        skStyle2.padding = '8px';
+        const stripeHeader = indexName ? 'gsipk' : 'pk';
+
+
+        const SizeRatio = Math.round(100 * item.collectionIndex / maxItemCount)/100;
+        const cssBar = 'linear-gradient(90deg, silver ' + SizeRatio*100 + '%, gainsboro ' + (SizeRatio)*100 + '%)';
+
+        const sizeBarDiv = (<div style={{
+            'color': 'dimgray' ,
+            'height' : '100%',
+            'display' : 'block',
+            'width' : '200px',
+            'margin' : '2px',
+            'padding' : '2px',
+            'background': cssBar}}>
+            {item.collectionIndex}
+        </div>);
+
+
+        return(<tr key={itemIndex}>
+            <td className="pkName" stripe={stripeHeader + (itemIndex%2 === 0 ? '1' : '0')} pkedges="firstlast">{item.pk}</td>
+            <td style={skStyle}>{item.skMin}</td>
+            <td style={skStyle2}>{item.skMax}</td>
+            <td className="collSize" >
+                {sizeBarDiv}
+            </td>
+
+        </tr>);
+
+    });
+
+    return(rows);
 
 }
 
@@ -299,7 +431,7 @@ const sortKeyGradient = (index, baseColor) => {
     // const baseColor = 115; // green
     const saturation = 100;
     const startingBrightness = 90;
-    const stopAfter = 5;
+    const stopAfter = 4;
     const stepSize = 9;
 
     return HSLToHex(baseColor, saturation, startingBrightness - ((index > stopAfter ? stopAfter : index) * stepSize));

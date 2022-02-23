@@ -7,4 +7,4 @@ build/
 public/
 ssh.sh
 scratch/
-
+app/lambda/index.zip

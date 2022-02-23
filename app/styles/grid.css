@@ -5,7 +5,6 @@
 }
 
 #tablegridform table button {
-    border:none;
     width:100%;
     color:dimgrey;
     padding-left:5px;
@@ -17,6 +16,8 @@
     color:navy;
     background-color:gainsboro;
 }
+
+
 
 #tablegridform table th {
     font-size: larger;
@@ -85,6 +86,7 @@
 
 .itemTable {
     border-collapse: collapse;
+    margin-top:5px;
 }
 .itemTable td {
 
@@ -109,7 +111,12 @@
     padding:3px;
 
 }
+.itemTable th {
+    color:dimgrey;
+    padding-bottom:3px;
+    padding-top:4px;
 
+}
 
 /*.itemTable td .cellValuePK{*/
     /*display:block;*/
@@ -174,11 +181,30 @@
     padding:5px;
 }
 
-.itemTable .pkHeader, .itemTable .skHeader {
-    padding-top:5px;
+.itemTable  button {
+    width:100%;
+    color:dimgrey;
+    padding-left:5px;
     padding-right:5px;
-    color:grey;
+    font-weight:bold;
+    border:none;
+    margin-bottom:4px;
+
 }
+
+.itemTable  button:hover {
+    color:dimgrey;
+    background-color:whitesmoke;
+}
+
+
+.itemTable .collSize {
+    color:dimgrey;
+    padding:4px;
+}
+
+
+
 
 [pkedges*='middle'] {
     padding: 5px;

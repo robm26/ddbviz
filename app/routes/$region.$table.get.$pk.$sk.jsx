@@ -61,9 +61,11 @@ export default function TableGetAction(params) {
 
     const data = useLoaderData();
 
-    const stats = {rowCount: data?.items?.length};
+    const stats = {rowCount: data?.item ? 1 : 0};
     stats.ConsumedCapacity = data?.capacity;
     stats.LastEvaluatedKey =  data?.lek ? data.lek : null;
+
+    console.log(stats);
 
     return (<div>
 

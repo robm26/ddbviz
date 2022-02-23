@@ -13,13 +13,21 @@ export function Menu(params) {
     const stats = params?.stats;
 
     const [pk1, setPk1] = React.useState(params?.pk);  // query textbox sets, query button reads
-    const [sk1, setSk1] = React.useState(params?.sk);  // query textbox sets, query button reads
+    const [sk1, setSk1] = React.useState(params?.sk);
+    const [getmode, setGetmode] = React.useState('get');
 
     const handleQuerybox = (val) => {
         setPk1(val.target.value);
     };
     const handleGetbox = (val) => {
+        let mySK = val.target.value;
+        if (mySK.slice(0,1) === '<' || mySK.slice(0,1) === '>' || mySK.slice(-1) === '*') {
+            setGetmode('query');
+        } else {
+            setGetmode('get');
+        }
         setSk1(val.target.value);
+
     };
 
 
@@ -123,7 +131,9 @@ export function Menu(params) {
         let skName = ks[1]?.AttributeName;
 
         const pkAction = skName || indexName ? 'query' : 'get';
-        const skAction = indexName ? 'query' : 'get';
+        const skAction = indexName ? 'query' : getmode;
+
+
 
 
         readForm = (<Form  method="post">
@@ -152,6 +162,7 @@ export function Menu(params) {
                 <td rowSpan="2">&nbsp;</td>
 
                 <td rowSpan="2" className="statsDiv">
+
                     {stats?.rowCount ? (<div  >{stats.rowCount + ' rows' } <br/>
                         {stats?.ConsumedCapacity} RCU <br/>
                         {stats?.LastEvaluatedKey ? 'LEK : ' + JSON.stringify(stats.LastEvaluatedKey) : null}
