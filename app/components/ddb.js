@@ -24,9 +24,13 @@ export const getTableMetadata = async (connection, table) => {
 
     const dynamodb = new AWS.DynamoDB(prepareAwsConfig(connection));
 
-    let data = await dynamodb.describeTable({TableName:table}).promise();
-
-    return data.Table;
+    try {
+        let data = await dynamodb.describeTable({TableName: table}).promise();
+        return data.Table;
+    } catch (err) {
+        console.log(err.statusCode + ' ' + err.code + '\n' + err.message);
+        return null;
+    }
 
 };
 

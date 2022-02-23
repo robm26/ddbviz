@@ -1,10 +1,10 @@
 
-#gridform table {
+#tablegridform table {
     background-color:whitesmoke;
     border-radius:7px;
 }
 
-#gridform table button {
+#tablegridform table button {
     border:none;
     width:100%;
     color:dimgrey;
@@ -13,19 +13,19 @@
 
 }
 
-#gridform table button:hover {
+#tablegridform table button:hover {
     color:navy;
     background-color:gainsboro;
 }
 
-#gridform table th {
+#tablegridform table th {
     font-size: larger;
     font-weight: normal;
     text-decoration:none;
 
 }
 
-#gridform td {
+#tablegridform td {
 
     background-color: gainsboro;
     padding:5px;
@@ -41,40 +41,180 @@
     width:100%;
 }
 
-#gridform .StorageCostStd {
-    background-color:#D0D0D0;
-}
-#gridform .StorageCostIA {
 
-}
-#gridform .ReadCostStd {
-    background-color:#D0D0D0;
-}
-#gridform .ReadCostIA {
-
-}
-#gridform .WriteCostStd {
-    background-color:#D0D0D0;
-}
-#gridform .WriteCostIA {
-
-}
-#gridform .TotalCostStd {
+#tablegridform .TotalCostStd {
     background-color:#C9C9C9;
     color:black;
 }
-#gridform .TotalCostIA {
+#tablegridform .TotalCostIA {
     background-color:#C9C9C9;
     color:black;
 }
 
-#gridform .DeltaIA_neg {
+#tablegridform .DeltaIA_neg {
     background-color:gray;
     color:limegreen;
     font-weight:bold;
 }
 
-#gridform .DeltaIA_pos {
+#tablegridform .DeltaIA_pos {
     background-color:gray;
     color:white;
 }
+
+#itemgridform table {
+    border: none;
+    padding:5px;
+    margin-left:5px;
+
+}
+
+#tableSummary {
+    background-color:gainsboro;
+    border:none;
+    border-radius:7px;
+    padding:3px;
+    margin-top:4px;
+    margin-bottom:4px;
+}
+
+#tableSummary td {
+    border:1px solid silver;
+    padding:3px;
+}
+
+.itemTable {
+    border-collapse: collapse;
+}
+.itemTable td {
+
+    background-color:gainsboro;
+    padding-bottom:10px;
+    padding-left:3px;
+    padding-right:3px;
+    border-left:1px solid whitesmoke;
+    border-bottom: 1px solid whitesmoke;
+    vertical-align:top;
+}
+
+.itemTable td .cellName{
+    background-color:silver;
+    color:gainsboro;
+    display:block;
+    padding:3px;
+
+}
+.itemTable td .cellValue{
+    display:block;
+    padding:3px;
+
+}
+
+
+/*.itemTable td .cellValuePK{*/
+    /*display:block;*/
+    /*padding:3px;*/
+    /*color:blue;*/
+    /*background-color:lightblue;*/
+    /**/
+/*}*/
+
+.itemTable .tdPK {
+    border-left:none;
+    border-bottom:1px solid whitesmoke;
+    vertical-align:middle;
+    height:100%;
+    padding-left:9px;
+
+}
+.itemTable .tdPK a {
+    color:navy;
+
+}
+
+.itemTable .tdSK {
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+    border-bottom:1px solid whitesmoke;
+    border-right:1px solid whitesmoke;
+    vertical-align:middle;
+
+}
+
+.itemTable .gsiPkLink {
+    color:blue;
+    font-weight:bold;
+}
+
+.itemTable .gsiSkLink {
+    color:green;
+    font-weight:bold;
+}
+
+.itemTable [final*='final'] {
+
+    border-bottom: 2px dashed dimgray;
+}
+
+.itemTable [pkedges*='first'] {
+    padding: 5px;
+    padding-left:9px;
+    border-top-left-radius: 25px;
+
+}
+
+.itemTable .itemAttrName {
+    background-color:silver;
+    padding:5px;
+
+}
+
+.itemTable .itemAttrValue {
+    background-color:gainsboro;
+    padding:5px;
+}
+
+.itemTable .pkHeader, .itemTable .skHeader {
+    padding-top:5px;
+    padding-right:5px;
+    color:grey;
+}
+
+[pkedges*='middle'] {
+    padding: 5px;
+    border-bottom:1px solid silver;
+}
+
+[pkedges*='last'] {
+    padding: 5px;
+    border-bottom-left-radius: 25px;
+    border-bottom: 2px solid whitesmoke !important;
+}
+
+
+[stripe^='pk0'] {
+    background-color: lightblue !important;
+}
+
+[stripe^='pk1'] {
+    background-color: lightskyblue !important;
+}
+
+[stripe^='gsipk0'] {
+    background-color: orchid !important;
+}
+
+[stripe^='gsipk1'] {
+    background-color: plum !important;
+}
+
+/*[skedges*='first'] {*/
+    /*border-bottom:1pt solid silver;*/
+/*}*/
+/*[skedges*='middle'] {*/
+    /*border-bottom:1pt solid silver;*/
+/*}*/
+
+/*[skedges*='last'] {*/
+    /*border-bottom: 2px dashed grey !important;*/
+/*}*/

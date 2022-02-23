@@ -7,6 +7,7 @@ import {
   ScrollRestoration
 } from "remix";
 
+
 import { Menu } from "~/components/menu";
 
 
@@ -39,7 +40,7 @@ export default function App() {
 
         <Outlet />
       </div>
-        <ScrollRestoration />
+        {/*<ScrollRestoration />*/}
         <Scripts />
         {process.env.NODE_ENV === "development" && <LiveReload />}
       </body>

@@ -13,8 +13,6 @@ export default function Index() {
 
       <div>
           <Menu />
-          <p>Welcome to ddbviz root index</p>
-
 
         <Outlet/>
 

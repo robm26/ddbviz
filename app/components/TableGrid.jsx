@@ -14,13 +14,8 @@ export const links = () => {
     return [{rel:"stylesheet", href:stylesUrl }];
 };
 
-export const action = async ({request}) => {
-    const body = await request.formData();
-    console.log(JSON.stringify(body, null, 2));
 
-    return null;
 
-};
 let region;
 
 export const loader = async ({ params }) => {
@@ -110,7 +105,8 @@ export function TableGrid(props) {
             WriteCostIA:WriteCostIA,
             TotalCostStd:TotalCostStd,
             TotalCostIA:TotalCostIA,
-            DeltaIA:DeltaIA
+            DeltaIA:DeltaIA,
+            Metadata:table
         });
     });
 
@@ -163,7 +159,11 @@ export function TableGrid(props) {
 
             {sortedRows.map((row)=>{
                 return <tr key={row.TableName}>
-                    <td>{row.TableName}</td>
+                    <td>
+                        <Link to={row.TableName} state={row.Metadata} >
+                            {row.TableName}
+                        </Link>
+                    </td>
                     <td>{row.GsiCount}</td>
                     <td>{row.ItemCount}</td>
                     <td>{row.SizeMB.toLocaleString()}</td>
@@ -189,7 +189,7 @@ export function TableGrid(props) {
     </table>);
 
     return (
-        <Form id="gridform" method="post" >
+        <Form id="tablegridform" method="post" >
             {tab}
         </Form>);
 }

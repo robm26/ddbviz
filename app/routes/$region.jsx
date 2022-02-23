@@ -15,10 +15,6 @@ export const action = async ({ request }) => {
 
 export const loader = async ({ params, request }) => {
 
-    let url = new URL(request.url);
-    let sps = new URLSearchParams(url.searchParams);
-    let sortAttr = sps.get('sortAttr');
-
     const tables = await listTables(params.region);
 
     let tableMetadatas = [];
@@ -30,28 +26,19 @@ export const loader = async ({ params, request }) => {
 
     return {
         region:params.region,
-        tables:tableMetadatas,
-        sortAttr: sortAttr
+        tables:tableMetadatas
     };
 };
-
 
 export default function RegionIndex() {
     const data = useLoaderData();
 
-    // let url = new URL(params.url);
-    // let term = url.searchParams.get("term");
-    // console.log('*** url ' + url);
-
-    // const errors = useActionData();
-    // const transition = useTransition();
-
     return (
         <div >
-            <Menu region={data.region}/>
+            <Menu region={data.region} />
 
 
-            <TableGrid metadatas={data.tables} sortAttr={data.sortAttr} sortForwards={true}/>
+            <TableGrid metadatas={data.tables} />
 
 
         </div>
