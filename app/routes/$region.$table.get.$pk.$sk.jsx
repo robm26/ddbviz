@@ -65,8 +65,6 @@ export default function TableGetAction(params) {
     stats.ConsumedCapacity = data?.capacity;
     stats.LastEvaluatedKey =  data?.lek ? data.lek : null;
 
-    console.log(stats);
-
     return (<div>
 
         <Menu region={data.params.region} table={data.params.table} stats={stats} pk={data.params.pk} sk={data.params.sk}/>

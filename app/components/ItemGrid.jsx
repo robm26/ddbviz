@@ -94,13 +94,13 @@ export function ItemGrid(props) {
     let tableHeaders;
     if(displayMode === 'raw') {
         tableHeaders = (<tr><th >{PkName}</th><th >{SkName}</th></tr>);
+
     } else if(displayMode === 'grid') {
 
         const tableHeaderVals = Object.keys(arrangedItems[0]).map((attr)=>{
             if(![PkName, SkName].includes(attr)) {
                 return(<th key={attr}>{attr}</th>);
             }
-
         });
 
         tableHeaders = (<tr><th>{PkName}</th>{SkName ? (<th>{SkName}</th>) : null }
@@ -160,6 +160,27 @@ export function ItemGrid(props) {
 
         let attrList = Object.keys(item); // re-order attributes so PK and SK are first
 
+
+
+        if(indexName) {   // re-sort attributes so keys appear first
+
+            if(skNameBase) {
+                const baseSkLocation = attrList.indexOf(skNameBase);
+                if(baseSkLocation > -1) {
+                    attrList.splice(baseSkLocation, 1);
+                }
+                attrList.unshift(skNameBase);
+            }
+
+            const basePkLocation = attrList.indexOf(pkNameBase);
+            if(basePkLocation > -1) {
+                attrList.splice(basePkLocation, 1);
+            }
+            attrList.unshift(pkNameBase);
+
+        }
+
+
         if(SkName) {
             const skLocation = attrList.indexOf(SkName);
             if(skLocation > -1) {
@@ -168,13 +189,16 @@ export function ItemGrid(props) {
             attrList.unshift(SkName);
         }
 
+
         const pkLocation = attrList.indexOf(PkName);
         if(pkLocation > -1) {
             attrList.splice(pkLocation, 1);
         }
         attrList.unshift(PkName);
 
+
         const basePK =  item[pkNameBase][Object.keys(item[pkNameBase])[0]];
+
 
         let pkValue;
 
@@ -236,8 +260,9 @@ export function ItemGrid(props) {
                             skStyle.backgroundColor = sortKeyGradient(collectionIndex, indexName ? sortColor2 : sortColor1);
 
                             const skAction = (indexName ? 'query' : 'get');
+                            let cn = indexName ? 'tdSKgsi' : 'tdSK';
 
-                            cell = (<td key={cellIndex} className="tdSK" skedges={pkedges} style={skStyle} >
+                            cell = (<td key={cellIndex} className={cn} skedges={pkedges} style={skStyle} >
                                 <span >
                                     <Link to={'/' + region + '/' + table + '/' + skAction + '/' + encodeURIComponent(currentPK) + '/' + encodeURIComponent(cellValue)} >
                                         {cellValue}
@@ -269,7 +294,12 @@ export function ItemGrid(props) {
                                 cellText = (<Link to={'/' + region + '/' + tableName + '/get/' + encodeURIComponent(basePK)  + '/' + encodeURIComponent(cellValue)} className="gsiSkLink">{cellText}</Link>);
                             }
 
-                            cell = (<td key={cellIndex} final={collectionFinalItem === 1 ? 'final' : null}>
+                            cell = (<td key={cellIndex}
+                                        final={collectionFinalItem === 1 ? 'final' : null}
+                                        datastripe={'ds' + collectionNumber%2}
+                                        sizewarning={cellValue.length > config().gridFormatting.valueHuge ?
+                                            'huge' : cellValue.length > config().gridFormatting.valueBig ? 'big' : null}
+                            >
 
                                 {displayMode === 'grid' ? null : (<span className="cellName">
                                        {attr}
@@ -305,7 +335,7 @@ export function ItemGrid(props) {
 
     let displayRows;
     if(displayMode === 'summary') {
-        displayRows = columnSorted(summary, indexName, sortAttr, sortDirection);
+        displayRows = columnSorted(summary, region, table, indexName, sortAttr, sortDirection);
     } else {
         displayRows = rows;
     }
@@ -338,7 +368,7 @@ export function ItemGrid(props) {
 
 }
 
-function columnSorted(items, indexName, sortAttr, sortDirection) {
+function columnSorted(items, region, table, indexName, sortAttr, sortDirection) {
 
     let sortedRows = [...items];
 
@@ -384,9 +414,19 @@ function columnSorted(items, indexName, sortAttr, sortDirection) {
 
 
         return(<tr key={itemIndex}>
-            <td className="pkName" stripe={stripeHeader + (itemIndex%2 === 0 ? '1' : '0')} pkedges="firstlast">{item.pk}</td>
-            <td style={skStyle}>{item.skMin}</td>
-            <td style={skStyle2}>{item.skMax}</td>
+            <td className="tdPK" stripe={stripeHeader + (itemIndex%2 === 0 ? '1' : '0')} pkedges="firstlast">
+                <Link to={'/' + region + '/' + table + '/query/' + encodeURIComponent(item.pk)}>
+                        {item.pk}
+                    </Link>
+            </td>
+            <td style={skStyle} className='tdSKgsi'>
+                <Link to={'/' + region + '/' + table + '/get/' + encodeURIComponent(item.pk) + '/' + item.skMin}>
+                    {item.skMin}</Link>
+            </td>
+            <td style={skStyle2} className='tdSKgsi'>
+                <Link to={'/' + region + '/' + table + '/get/' + encodeURIComponent(item.pk) + '/' + item.skMax}>
+                {item.skMax}</Link>
+            </td>
             <td className="collSize" >
                 {sizeBarDiv}
             </td>
@@ -411,8 +451,11 @@ function makeGrid(items) {
                 attrNames.push(attr);
             }
         });
-
     });
+
+    // sort attrNames
+
+
 
     items.map((item)=> {
         const newItem = {};

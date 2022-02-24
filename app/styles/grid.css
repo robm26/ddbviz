@@ -97,6 +97,15 @@
     border-left:1px solid whitesmoke;
     border-bottom: 1px solid whitesmoke;
     vertical-align:top;
+    color:dimgray;
+    white-space:nowrap;
+}
+.itemTable .pk a {
+    color:navy;
+}
+
+.itemTable .sk a {
+    color:green !important;
 }
 
 .itemTable td .cellName{
@@ -111,6 +120,7 @@
     padding:3px;
 
 }
+
 .itemTable th {
     color:dimgrey;
     padding-bottom:3px;
@@ -128,34 +138,43 @@
 
 .itemTable .tdPK {
     border-left:none;
-    border-bottom:1px solid whitesmoke;
     vertical-align:middle;
     height:100%;
     padding-left:9px;
 
 }
-.itemTable .tdPK a {
-    color:navy;
+.itemTable .tdPK a  {
+    color:navy !important;
+
+}
+
+.itemTable .tdSK a {
+    color:green !important;
+
+}
+
+.itemTable .tdSKgsi a {
+    color: #7d7708 !important;
 
 }
 
 .itemTable .tdSK {
     border-top-right-radius: 15px;
     border-bottom-right-radius: 15px;
-    border-bottom:1px solid whitesmoke;
-    border-right:1px solid whitesmoke;
     vertical-align:middle;
-
+}
+.itemTable .tdSKgsi {
+    vertical-align:middle;
 }
 
 .itemTable .gsiPkLink {
-    color:blue;
-    font-weight:bold;
+    color:SteelBlue;
+
 }
 
 .itemTable .gsiSkLink {
-    color:green;
-    font-weight:bold;
+    color:SeaGreen;
+
 }
 
 .itemTable [final*='final'] {
@@ -203,7 +222,15 @@
     padding:4px;
 }
 
+.itemTable [sizewarning^='big'] {
+    background-color: #dcc8c8 !important;
 
+}
+
+.itemTable [sizewarning^='huge'] {
+    background-color: #dcb4b4 !important;
+
+}
 
 
 [pkedges*='middle'] {
@@ -233,6 +260,16 @@
 [stripe^='gsipk1'] {
     background-color: plum !important;
 }
+
+[datastripe^='ds0'] {
+    background-color: #gainsboro !important;
+}
+
+[datastripe^='ds1'] {
+    background-color: gainsboro !important;
+}
+
+
 
 /*[skedges*='first'] {*/
     /*border-bottom:1pt solid silver;*/

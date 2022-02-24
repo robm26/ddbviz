@@ -134,9 +134,7 @@ export function Menu(params) {
         const skAction = indexName ? 'query' : getmode;
 
 
-
-
-        readForm = (<Form  method="post">
+        readForm = (<Form  method="post"  >
             <table className="readFormTable">
                 <thead></thead><tbody>
             <tr>

@@ -3,6 +3,12 @@
 export const config = () => {
   return {
     "displayBytesMax" : 25,
+
+      "gridFormatting":{
+          "valueBig" : 4000,
+          "valueHuge" : 100000
+      },
+
     "regions": [
         "us-east-1",
         "us-east-2",
