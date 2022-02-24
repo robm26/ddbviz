@@ -176,6 +176,9 @@
     color:SeaGreen;
 
 }
+.itemTable .emptyGridCell {
+    background-color:whitesmoke !important;
+}
 
 .itemTable [final*='final'] {
 
@@ -266,6 +269,25 @@
 }
 
 [datastripe^='ds1'] {
+    background-color: gainsboro !important;
+}
+
+
+[preview^='label0'] {
+    background-color: #ebebeb !important;
+    color: #fafafa !important;
+}
+[preview^='p0'] {
+    background-color: whitesmoke !important;
+    color:gainsboro !important;
+}
+
+
+[preview^='label1'] {
+    background-color: silver !important;
+    color:green;
+}
+[preview^='p1'] {
     background-color: gainsboro !important;
 }
 

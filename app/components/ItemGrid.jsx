@@ -15,6 +15,7 @@ export function ItemGrid(props) {
     const data = useLoaderData();
 
     const items = data.items;
+    const gsi = props?.gsi; // gsi preview
 
     let region = data.params.region;
     let table = data.params.table;
@@ -39,6 +40,43 @@ export function ItemGrid(props) {
     if(indexName) {
 
         ks = data.metadata.GlobalSecondaryIndexes.filter(item=>item.IndexName === indexName)[0].KeySchema;
+
+    }
+
+    let gsiProjectedAttrs = [];
+    let gsiProjectionType;
+    let gsiPreviewPk;
+    let gsiPreviewSk;
+
+    if(gsi) { // gsi preview
+        const previewGsi = data.metadata.GlobalSecondaryIndexes.filter(item=>item.IndexName === gsi)[0];
+
+        gsiProjectionType = previewGsi?.Projection?.ProjectionType;
+
+        //let gsiProjectedAttrs = [];
+
+        gsiPreviewPk = previewGsi.KeySchema[0].AttributeName;
+        gsiProjectedAttrs.push(gsiPreviewPk);
+
+        if(previewGsi.KeySchema.length > 1) {
+            gsiPreviewSk = previewGsi.KeySchema[1].AttributeName;
+            gsiProjectedAttrs.push(gsiPreviewSk);
+        }
+        gsiProjectedAttrs.push(pkNameBase);
+
+        if(skNameBase) {
+            gsiProjectedAttrs.push(skNameBase);
+        }
+
+        if(gsiProjectionType === 'INCLUDE') {
+            const includedAttrs = previewGsi?.Projection?.NonKeyAttributes;
+            gsiProjectedAttrs = gsiProjectedAttrs.concat(includedAttrs);
+
+
+        } else if (gsiProjectionType === 'ALL') {
+            gsiProjectedAttrs = [];
+
+        }
 
     }
 
@@ -83,6 +121,8 @@ export function ItemGrid(props) {
     };
 
 
+
+
     let arrangedItems;
     if(displayMode === 'grid') {
         arrangedItems = makeGrid(items);
@@ -110,8 +150,10 @@ export function ItemGrid(props) {
     } else {
         tableHeaders = (<tr>
             <th><button onClick={()=>{sortSorter('pk')}}>{PkName}</button></th>
-            <th><button >{SkName} min</button></th>
-            <th><button >{SkName} max</button></th>
+
+            {!SkName ? null : (<th><button >{SkName} min</button></th>)}
+            {!SkName ? null : (<th><button >{SkName} max</button></th>)}
+
             <th><button onClick={()=>{sortSorter('collectionIndex')}}>item count</button></th>
         </tr>);
     }
@@ -206,6 +248,9 @@ export function ItemGrid(props) {
             {attrList.map((attr, cellIndex)=>{
 
                     let cellValue = item[attr][Object.keys(item[attr])[0]];
+                    if(!cellValue) {
+                        cellValue = '';
+                    }
 
                     const displayBytesMax = config().displayBytesMax;
 
@@ -235,7 +280,10 @@ export function ItemGrid(props) {
                         cell = (<td key={cellIndex} className="tdPK" pkedges={pkedges} stripe={stripe + collectionNumber%2}>
                                 <span >
                                     <Link to={'/' + region + '/' + table + '/' + pkAction + '/' + encodeURIComponent(cellValue)} >
-                                        {cellValue}</Link>
+
+                                        {cellValue}
+
+                                    </Link>
                                 </span>
                         </td>);
 
@@ -294,14 +342,19 @@ export function ItemGrid(props) {
                                 cellText = (<Link to={'/' + region + '/' + tableName + '/get/' + encodeURIComponent(basePK)  + '/' + encodeURIComponent(cellValue)} className="gsiSkLink">{cellText}</Link>);
                             }
 
+
+
                             cell = (<td key={cellIndex}
                                         final={collectionFinalItem === 1 ? 'final' : null}
                                         datastripe={'ds' + collectionNumber%2}
                                         sizewarning={cellValue.length > config().gridFormatting.valueHuge ?
                                             'huge' : cellValue.length > config().gridFormatting.valueBig ? 'big' : null}
+                                        className={cellValue.length === 0 ? 'emptyGridCell' : null}
+                                        preview={previewCell(attrList, attr, gsiPreviewPk, gsiPreviewSk, gsiProjectedAttrs, 'p') }
                             >
 
-                                {displayMode === 'grid' ? null : (<span className="cellName">
+                                {displayMode === 'grid' ? null : (<span
+                                    className="cellName" preview={previewCell(attrList, attr, gsiPreviewPk, gsiPreviewSk, gsiProjectedAttrs, 'label')} >
                                        {attr}
                                     </span>)}
 
@@ -344,7 +397,7 @@ export function ItemGrid(props) {
         <>
             <button onClick={toggleDisplayMode}>{(displayMode === 'grid' ? 'raw' : 'grid').toUpperCase()}</button>
 
-            {data?.params?.action === 'scan' && SkName ? (
+            {data?.params?.action === 'scan' && (SkName || indexName) ? (
                 <button onClick={toggleSummary}>{(displayMode === 'summary' ? 'raw' : 'summary').toUpperCase()}</button>
             ) : null}
 
@@ -414,19 +467,26 @@ function columnSorted(items, region, table, indexName, sortAttr, sortDirection) 
 
 
         return(<tr key={itemIndex}>
+
             <td className="tdPK" stripe={stripeHeader + (itemIndex%2 === 0 ? '1' : '0')} pkedges="firstlast">
                 <Link to={'/' + region + '/' + table + '/query/' + encodeURIComponent(item.pk)}>
                         {item.pk}
                     </Link>
             </td>
-            <td style={skStyle} className='tdSKgsi'>
-                <Link to={'/' + region + '/' + table + '/get/' + encodeURIComponent(item.pk) + '/' + item.skMin}>
-                    {item.skMin}</Link>
-            </td>
-            <td style={skStyle2} className='tdSKgsi'>
-                <Link to={'/' + region + '/' + table + '/get/' + encodeURIComponent(item.pk) + '/' + item.skMax}>
-                {item.skMax}</Link>
-            </td>
+            {!item.skMin ? null : (
+                <td style={skStyle} className='tdSKgsi'>
+                    <Link to={'/' + region + '/' + table + '/get/' + encodeURIComponent(item.pk) + '/' + item.skMin}>
+                        {item.skMin}</Link>
+                </td>
+            ) }
+
+            {!item.skMax ? null : (
+                <td style={skStyle2} className='tdSKgsi'>
+                    <Link to={'/' + region + '/' + table + '/get/' + encodeURIComponent(item.pk) + '/' + item.skMax}>
+                        {item.skMax}</Link>
+                </td>
+            ) }
+
             <td className="collSize" >
                 {sizeBarDiv}
             </td>
@@ -455,12 +515,10 @@ function makeGrid(items) {
 
     // sort attrNames
 
-
-
     items.map((item)=> {
         const newItem = {};
         attrNames.map((attr)=> {
-            newItem[attr] = attr in item ? item[attr] : '-';
+            newItem[attr] = attr in item ? item[attr] : '';
         });
         gridItems.push(newItem);
     });
@@ -469,6 +527,21 @@ function makeGrid(items) {
 
 }
 
+const previewCell = (attrList, attr, gsiPreviewPk, gsiPreviewSk, gsiProjectedAttrs, element) => {
+
+    if(gsiPreviewPk && !attrList.includes(gsiPreviewPk) ) {
+        // sparse row, do not show
+        return(element + '0');
+    }
+
+    if(gsiProjectedAttrs.length === 0 || gsiProjectedAttrs.includes(attr)) {
+        return(element + '1');
+    } else {
+        return(element + '0');
+    }
+
+
+};
 
 const sortKeyGradient = (index, baseColor) => {
     // const baseColor = 115; // green

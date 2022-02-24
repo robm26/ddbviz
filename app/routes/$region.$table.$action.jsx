@@ -27,6 +27,7 @@ export const loader = async ({ params }) => {
     let items = [];
 
     if(params?.action === 'scan') {
+
         items = await handler({
             Region:params.region,
             TableName:tableName,
@@ -36,7 +37,10 @@ export const loader = async ({ params }) => {
             ScanLimit: 999999,
             ReturnFormat:"both"
         });
+        //console.log(items.Items.length);
+
     }
+
 
     return {
         params:params,
@@ -53,9 +57,11 @@ export default function TableScanAction(params) {
     stats.ConsumedCapacity = data?.capacity;
     stats.LastEvaluatedKey =  data?.lek ? data.lek : null;
 
+    const [gsi, setGsi] = React.useState('');  // GSI hover to preview feature
+
     return (<div>
-        <Menu region={data.params.region} table={data.params.table} stats={stats} />
-        <ItemGrid />
+        <Menu region={data.params.region} table={data.params.table} stats={stats} gsi={gsi} setGsi={setGsi} />
+        <ItemGrid gsi={gsi}/>
 
     </div>);
 

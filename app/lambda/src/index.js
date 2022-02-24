@@ -24,6 +24,9 @@ export async function handler(event) {
     const ScanLimit = event?.ScanLimit;
     const ReturnFormat = event?.ReturnFormat || 'data';
 
+    //let endpointURL = 'http://localhost:8000';
+    let endpointURL = 'https://dynamodb.' + Region + '.amazonaws.com';
+
     let params = {
         TableName: TableName,
         ReturnConsumedCapacity:'TOTAL',
@@ -47,7 +50,27 @@ export async function handler(event) {
         }
     };
 
-    const client = new DynamoDBClient( {region:Region} );
+    // const config = DynamoDBClientConfig({
+    //     // credentials: {
+    //     //     accessKeyId: process.env.AWS_ACCESS_KEY
+    //     //     secretAccessKey: process.env.AWS_SECRET_KEY
+    //     // },
+    //     region: Region,
+    // });
+    //
+    // config.endpoint = endpointURL;
+
+    // const client = new DynamoDBClient.from(new DynamoDB(config));
+
+    const client = new DynamoDBClient( {
+        region:Region,
+        endpoint: endpointURL,
+        // credentials: {
+        //     accessKeyId: "xxx",
+        //     secretAccessKey: "yyy",
+        // }
+    });
+
 
     try {
         let results;

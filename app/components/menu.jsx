@@ -12,9 +12,14 @@ export function Menu(params) {
     const transition = useTransition();
     const stats = params?.stats;
 
+    const gsi = params?.gsi;  // gsi preview
+    const setGsi = params?.setGsi;
+
+
     const [pk1, setPk1] = React.useState(params?.pk);  // query textbox sets, query button reads
     const [sk1, setSk1] = React.useState(params?.sk);
     const [getmode, setGetmode] = React.useState('get');
+
 
     const handleQuerybox = (val) => {
         setPk1(val.target.value);
@@ -74,35 +79,59 @@ export function Menu(params) {
         const pk = params?.pk;
         const sk = params?.sk;
 
+        const handleHover = (newGsi) => {
+
+            if (typeof gsi !== 'undefined') {setGsi(newGsi);}
+        };
+
+
+        if(gsis) {
+
+            gsis.sort( function( a , b){
+                if(a.IndexName > b.IndexName) return 1;
+                if(a.IndexName < b.IndexName) return -1;
+                return 0;
+            });
+
+        }
         tableTitle = (
             <div className="tableTitle">
 
-                <div>
+                <div onMouseEnter={() => (  handleHover('') )} >
                     &nbsp;
-                    <Link to={'/' + params.region} ><span className="emoji">📙</span></Link>
+                    <Link to={'/' + params.region} ><span className="emoji"> 📙</span></Link>
                     &nbsp;
                     <Link to={'/' + params.region + '/' + tableName} className={indexName ? null : 'selected'}>
+
                         {tableName}
+
                     </Link> &nbsp;&nbsp;
                     <span className="emoji" >
                         {Math.round(TableSizeBytes/1000).toLocaleString()} KB {ItemCount.toLocaleString()} items
                     </span>
                 </div>
 
+
                 {gsis && gsis.map((item, index)=>{
+
 
                     const gsiSizeRatio = Math.round(100 * item.IndexSizeBytes / TableSizeBytes)/100;
                     const cssBar = 'linear-gradient(90deg, silver ' + gsiSizeRatio*100 + '%, gainsboro ' + (gsiSizeRatio)*100 + '%)';
 
-                    return (<div key={item.IndexName}  style={{
+                    const divStyle = {
                         'color': 'dimgray' ,
                         'margin' : '4px',
                         'paddingRight' : '4px',
                         'paddingBottom': '4px',
                         'borderRadius': '5px',
-                        'border': '1px solid silver',
+                        'border': item.IndexName === gsi && !indexName ? '1px solid blue' : '1px solid silver',
                         'background': cssBar
-                    }}>
+                    };
+
+
+                    return (<div key={item.IndexName}  style={divStyle}
+                                 onMouseEnter={() => handleHover(item.IndexName)}
+                    >
 
                         &nbsp;&nbsp;&nbsp;
                         <span className="emoji">📒</span>
@@ -111,9 +140,10 @@ export function Menu(params) {
                         <Link to={'/' + params.region + '/' + tableName + '^' + item.IndexName} className={item.IndexName === indexName ? 'selected': null} >
                             {item.IndexName}
                         </Link>
-                        &nbsp;&nbsp;
-                        <span className="emoji" >
 
+                        &nbsp;&nbsp;
+
+                        <span className="emoji" >
                         {Math.round(item.IndexSizeBytes/1000).toLocaleString()} KB  {Math.round(item.ItemCount).toLocaleString()} items
                         </span>
                     </div>);
