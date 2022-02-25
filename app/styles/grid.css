@@ -87,6 +87,7 @@
 .itemTable {
     border-collapse: collapse;
     margin-top:5px;
+
 }
 .itemTable td {
 
@@ -235,6 +236,14 @@
 
 }
 
+.itemTableControls {
+
+}
+
+.itemTableDiv {
+    overflow: scroll;
+    height:1000px;
+}
 
 [pkedges*='middle'] {
     padding: 5px;
@@ -273,22 +282,48 @@
 }
 
 
+
+
 [preview^='label0'] {
     background-color: #ebebeb !important;
     color: #fafafa !important;
 }
-[preview^='p0'] {
+[preview^='label1'] {
+    background-color: silver !important;
+
+}
+[preview^='label2'] {
+    /*background-color: mediumorchid !important;*/
+}
+
+[preview^='label3'] {
+    /*background-color: rgba(156, 128, 0, 0.46) !important;*/
+}
+
+
+[preview^='cell0'] {
     background-color: whitesmoke !important;
     color:gainsboro !important;
 }
-
-
-[preview^='label1'] {
-    background-color: silver !important;
-    color:green;
-}
-[preview^='p1'] {
+[preview^='cell1'] {
     background-color: gainsboro !important;
+}
+[preview^='cell2'] {
+    color: darkorchid !important;
+    font-weight:bold;
+}
+
+[preview^='cell3'] {
+    color: #b4a700 !important;
+    font-weight:bold;
+}
+
+
+[preview^='pk0'] {
+    background-color: #ebebeb !important;
+}
+[preview^='sk0'] {
+    background-color: #ebebeb !important;
 }
 
 
