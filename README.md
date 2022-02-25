@@ -34,7 +34,7 @@ AWS Cloud9 environment.
 1. Open a shell terminal. Verify your environment is ready to connect to your AWS account by running
 ```aws sts get-caller-identity```  and ```aws dynamodb list-tables```
 1. Navigate into the [app](./app/) 
-folder, and type ```npm install``` to install remix and required node modules.
+folder, and type ```npm install``` and then ````npm run postinstall```` to install remix and required node modules.
 1. Run ```npm run dev```
 
     | :information_source: Profiles and Ports     |
