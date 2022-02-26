@@ -32,7 +32,9 @@ export function Item(props) {
         SkName = ks[1].AttributeName;
     }
 
-    const tableHeaders = (<tr><th>attribute</th><th>value</th></tr>);
+    const tableHeaders = (<>
+        <tr><th>attribute</th><th>value</th></tr>
+    </>);
 
     let attrList = Object.keys(item);
 
@@ -46,8 +48,9 @@ export function Item(props) {
         return x < y ? 1 : -1;
     });
 
-    const rows = (<tbody >{
-        attrList.map((attr)=> {
+    const rows = (<tbody >
+    {
+        attrList.map((attr, index)=> {
 
             const attrVal = item[attr];
             const attrValType = Object.keys(attrVal)[0];
@@ -66,7 +69,11 @@ export function Item(props) {
 
     const tab = (<table className="itemTable" suppressHydrationWarning>
         <thead>{tableHeaders}</thead>
+
         {rows}
+
+        {/*<tr><th><br/><br/>⬅️️</th><th><br/><br/>➡️</th></tr>*/}
+
     </table>);
 
 

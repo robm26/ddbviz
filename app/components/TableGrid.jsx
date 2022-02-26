@@ -152,7 +152,7 @@ export function TableGrid(props) {
         </thead>
     );
 
-    const tab = (<table id={'dataTable'}>
+    const tab = (<table className='tableTable'>
 
         {tabhead}
         <tbody>
@@ -170,12 +170,12 @@ export function TableGrid(props) {
                     <td>{row.CapacityMode}</td>
                     <td>{row.ProvisionedRCU === 0 ? '-' : row.ProvisionedRCU}</td>
                     <td>{row.ProvisionedWCU === 0 ? '-' : row.ProvisionedWCU}</td>
-                    <td className="StorageCostStd">{rounder(row.StorageCostStd)}</td>
-                    <td className="StorageCostIA" >{rounder(row.StorageCostIA)} </td>
-                    <td className="ReadCostStd">{rounder(row.ReadCostStd)}</td>
-                    <td className="ReadCostIA" >{rounder(row.ReadCostIA)} </td>
-                    <td className="WriteCostStd">{rounder(row.WriteCostStd)}</td>
-                    <td className="WriteCostIA" >{rounder(row.WriteCostIA)} </td>
+                    <td>{rounder(row.StorageCostStd)}</td>
+                    <td>{rounder(row.StorageCostIA)} </td>
+                    <td>{rounder(row.ReadCostStd)}</td>
+                    <td>{rounder(row.ReadCostIA)} </td>
+                    <td>{rounder(row.WriteCostStd)}</td>
+                    <td>{rounder(row.WriteCostIA)} </td>
 
                     <td className="TotalCostStd">{rounder(row.TotalCostStd)}</td>
                     <td className="TotalCostIA" >{rounder(row.TotalCostIA)} </td>
