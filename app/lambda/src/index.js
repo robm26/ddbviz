@@ -18,14 +18,26 @@ export async function handler(event) {
     const ActionName = event?.ActionName;
     const PkName = event?.PkName;
     const PkValue = event?.PkValue;
+
     const SkName = event?.SkName;
     let SkValue = event?.SkValue;
+
     const ScanCount = event?.ScanCount || 1;
     const ScanLimit = event?.ScanLimit;
     const ReturnFormat = event?.ReturnFormat || 'data';
 
-    //let endpointURL = 'http://localhost:8000';
+    const PkType = typeof PkValue === 'string' ? 'S' : 'N';
+    let SkType;
+    if(SkValue) {
+        SkType = typeof SkValue === 'string' ? 'S' : 'N';
+    }
+
+
     let endpointURL = 'https://dynamodb.' + Region + '.amazonaws.com';
+
+    if(Region === 'localhost:8000') {
+        endpointURL = 'http://' + Region
+    }
 
     let params = {
         TableName: TableName,
@@ -50,17 +62,6 @@ export async function handler(event) {
         }
     };
 
-    // const config = DynamoDBClientConfig({
-    //     // credentials: {
-    //     //     accessKeyId: process.env.AWS_ACCESS_KEY
-    //     //     secretAccessKey: process.env.AWS_SECRET_KEY
-    //     // },
-    //     region: Region,
-    // });
-    //
-    // config.endpoint = endpointURL;
-
-    // const client = new DynamoDBClient.from(new DynamoDB(config));
 
     const client = new DynamoDBClient( {
         region:Region,
@@ -79,58 +80,75 @@ export async function handler(event) {
             results = await client.send(new ScanCommand(params));
         }
 
-        let kce = "#pk = :pk";
-        let ean = {"#pk":PkName};
-        let eav = {":pk": {"S":PkValue}};
+              //   ******************** QUERY
+        if(ActionName === 'query') {
+            let kce = "#pk = :pk";
+            let ean = {"#pk":PkName};
+            let eav = {};
+            eav[":pk"] = {};
+            eav[":pk"][PkType] = PkType === 'S' ? PkValue : PkValue.toString();
 
-        if(SkName && SkValue) {
 
-            const firstChar = SkValue.slice(0,1);
-            const finalChar = SkValue.slice(-1);
+            if(SkName && SkValue) {
+                let firstChar;
+                let finalChar;
 
-            let operator = '=';
+                if (SkType === 'S') {
+                    firstChar = SkValue.slice(0,1);
+                    finalChar = SkValue.slice(-1);
+                }
 
-            let kceSort = " And #sk = :sk";
+                let operator = '=';
 
-            if(['<','>'].includes(firstChar)) {
-                operator = firstChar;
-                kceSort = " And #sk " + operator + " :sk";
-                SkValue = SkValue.slice(1);
+                let kceSort = " And #sk = :sk";
 
-            } else if ('*' === finalChar) {
-                kceSort = " And begins_with(#sk, :sk)";
-                SkValue = SkValue.slice(0, -1);
+                if(['<','>'].includes(firstChar)) {
+                    operator = firstChar;
+                    kceSort = " And #sk " + operator + " :sk";
+                    SkValue = SkValue.slice(1);
+
+                } else if ('*' === finalChar) {
+                    kceSort = " And begins_with(#sk, :sk)";
+                    SkValue = SkValue.slice(0, -1);
+
+                }
+
+                kce = "#pk = :pk " + kceSort;
+                ean["#sk"] = SkName;
+
+                eav[":sk"] = {};
+                eav[":sk"][SkType] = SkType === 'S' ? SkValue : SkValue.toString();
 
             }
 
-            //
-            kce = "#pk = :pk " + kceSort;
-            ean["#sk"] = SkName;
-            eav[":sk"] = {"S":SkValue};
+            // console.log(kce);
+            // console.log(ean);
+            // console.log(eav);
 
 
-        }
-
-        // console.log(kce);
-        // console.log(ean);
-        // console.log(eav);
-
-        if(ActionName === 'query') {
             params.KeyConditionExpression = kce;
             params.ExpressionAttributeNames = ean;
             params.ExpressionAttributeValues = eav;
 
             results = await client.send(new QueryCommand(params));
         }
+
+
         if(ActionName === 'get') {
             params = {
                 TableName: TableName,
                 ReturnConsumedCapacity:'TOTAL',
                 Key: {}
             };
-            params.Key[PkName] = {'S':PkValue};
+
+            params.Key[PkName] = {};
+            params.Key[PkName][PkType] = PkValue.toString();
+
+
             if(SkValue) {
-                params.Key[SkName] = {'S':SkValue};
+
+                params.Key[SkName] = {};
+                params.Key[SkName][SkType] = SkValue.toString();
             }
 
             results = await client.send(new GetItemCommand(params));
@@ -141,9 +159,12 @@ export async function handler(event) {
 
     } catch (error) {
 
-        console.log(error.name + ' : ' + error.message);
-
-        return 'error: ' + error.name;
+        return {
+            error: {
+                name: error.name,
+                message: error.message
+            }
+        };
 
     }
 

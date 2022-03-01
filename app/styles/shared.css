@@ -161,3 +161,10 @@ button:hover {
     background-color: silver;
     color: white;
 }
+
+.errorPanel {
+    background-color: LavenderBlush;
+    margin:10px;
+    padding:10px;
+    border-radius:5px;
+}

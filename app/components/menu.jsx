@@ -20,6 +20,10 @@ export function Menu(params) {
     const [sk1, setSk1] = React.useState(params?.sk);
     const [getmode, setGetmode] = React.useState('get');
 
+    if(data?.error) {
+        return null;
+    }
+
 
     const handleQuerybox = (val) => {
         setPk1(val.target.value);
@@ -61,6 +65,8 @@ export function Menu(params) {
     let readForm;
 
     if(params?.table) {
+
+
         const path = '/' + params.region + '/' + params.table;
 
         let maxSize = 0;
@@ -76,12 +82,18 @@ export function Menu(params) {
             indexName = tableName.substring(caretPosition + 1);
             tableName = tableName.substring(0, caretPosition);
         }
+
         const pk = params?.pk;
         const sk = params?.sk;
 
         const handleHover = (newGsi) => {
 
-            if (typeof gsi !== 'undefined') {setGsi(newGsi);}
+            if (typeof gsi !== 'undefined') {
+                if(!indexName) {
+                    setGsi(newGsi);
+                }
+
+            }
         };
 
 

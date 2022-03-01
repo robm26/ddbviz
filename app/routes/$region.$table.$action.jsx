@@ -47,7 +47,8 @@ export const loader = async ({ params }) => {
         metadata:metadata,
         items:items?.Items,
         capacity:items?.ConsumedCapacity?.CapacityUnits,
-        lek:items?.LastEvaluatedKey
+        lek:items?.LastEvaluatedKey,
+        error:items?.error
     };
 };
 
@@ -56,12 +57,18 @@ export default function TableScanAction(params) {
     const stats = {rowCount: data?.items?.length};
     stats.ConsumedCapacity = data?.capacity;
     stats.LastEvaluatedKey =  data?.lek ? data.lek : null;
+    const error = data?.error;
 
     const [gsi, setGsi] = React.useState('');  // GSI hover to preview feature
 
+    const payload = error ?
+        (<div className="errorPanel">{error.name}<br/>{error.message}</div>) :
+        (<ItemGrid gsi={gsi} />);
+
+
     return (<div>
         <Menu region={data.params.region} table={data.params.table} stats={stats} gsi={gsi} setGsi={setGsi} />
-        <ItemGrid gsi={gsi}/>
+        {payload}
 
     </div>);
 

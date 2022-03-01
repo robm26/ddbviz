@@ -15,6 +15,7 @@ export const action = async ({ request }) => {
 
 export const loader = async ({ params, request }) => {
 
+
     const tables = await listTables(params.region);
 
     let tableMetadatas = [];

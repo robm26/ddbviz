@@ -25,17 +25,24 @@ export const loader = async ({ params }) => {
     const metadata = await getTableMetadata(params.region, tableName);
 
     let ks = metadata.KeySchema;
+    let ads = metadata.AttributeDefinitions;
 
     if(indexName) {
         ks = metadata.GlobalSecondaryIndexes.filter(item=>item.IndexName === indexName)[0].KeySchema;
     }
 
     const PkName = ks[0].AttributeName;
+    const PkType = ads.filter(item => item.AttributeName === PkName)[0].AttributeType;
+
+
+    if(indexName) {
+        ks = metadata.GlobalSecondaryIndexes.filter(item=>item.IndexName === indexName)[0].KeySchema;
+    }
+
 
     let items = [];
 
-
-    items = await handler({
+    let event = {
         Region:params.region,
         TableName:tableName,
         IndexName:indexName,
@@ -45,29 +52,48 @@ export const loader = async ({ params }) => {
         ScanCount: 1,
         ScanLimit: 999999,
         ReturnFormat:"both"
-    });
+    };
+
+    if(PkType === 'N') {
+        if(params.pk.indexOf(".") > -1) {
+            event.PkValue = parseFloat(params.pk);
+        } else {
+            event.PkValue = parseInt(params.pk);
+        }
+    }
+
+
+    items = await handler(event);
 
 
     return {
         params:params,
         metadata:metadata,
         items:items?.Items,
-        capacity:items?.ConsumedCapacity?.CapacityUnits
+        capacity:items?.ConsumedCapacity?.CapacityUnits,
+        error:items?.error
     };
 };
 
-export default function TableQueryAction(params) {
+export default function TableQueryActionPk(params) {
 
     const data = useLoaderData();
-    const stats = {rowCount: data.items.length};
+    const stats = {rowCount: data?.items?.length};
     stats.ConsumedCapacity = data?.capacity;
     stats.LastEvaluatedKey =  data?.lek ? data.lek : null;
+    const error = data?.error;
+
+    const [gsi, setGsi] = React.useState('');  // GSI hover to preview feature
+
+    const payload = error ?
+        (<div className="errorPanel">{error.name}<br/>{error.message}</div>) :
+        (<ItemGrid  gsi={gsi} />);
 
     return (<div>
 
-        <Menu region={data.params.region} table={data.params.table} stats={stats} pk={data.params.pk} sk={data.params.sk}/>
+        <Menu region={data.params.region} table={data.params.table} stats={stats} pk={data.params.pk} sk={data.params.sk} gsi={gsi} setGsi={setGsi}  />
 
-        <ItemGrid items={data.items}/>
+        {payload}
 
 
     </div>);

@@ -14,7 +14,8 @@ export const config = () => {
         "us-east-2",
         "us-west-1",
         "us-west-2",
-        "eu-west-1"
+        "eu-west-1",
+        "localhost:8000"
     ],
     "prices": {
         "us-east-1": {

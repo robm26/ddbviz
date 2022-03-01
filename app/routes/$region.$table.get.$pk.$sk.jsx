@@ -8,8 +8,6 @@ import { getTableMetadata } from "../components/ddb";
 
 export const action = async ({ request }) => {
 
-    // console.log(JSON.stringify(request));
-
     return null;
 };
 
@@ -27,17 +25,26 @@ export const loader = async ({ params }) => {
     const metadata = await getTableMetadata(params.region, tableName);
 
     let ks = metadata.KeySchema;
+    let ads = metadata.AttributeDefinitions;
+
 
     const PkName = ks[0].AttributeName;
+    const PkType = ads.filter(item => item.AttributeName === PkName)[0].AttributeType;
+
 
     let SkName;
+    let SkType;
+
     if(ks.length > 1) {
         SkName = ks[1].AttributeName;
+
+        SkType = ads.filter(item => item.AttributeName === SkName)[0].AttributeType;
+
     }
 
-    let item = {};
 
-    item = await handler({
+    let item = {};
+    let event = {
         Region:params.region,
         TableName:tableName,
         ActionName:'get',
@@ -46,30 +53,70 @@ export const loader = async ({ params }) => {
         SkName: SkName,
         SkValue: params.sk,
         ReturnFormat:"both"
-    });
+    };
+
+    if(PkType === 'S') {
+        event.PkValue = params.pk.toString();
+    } else {
+
+        if(!isNaN(params.pk)) {
+            if(params.pk.indexOf(".") > -1) {
+                event.PkValue = parseFloat(params.pk);
+            } else {
+                event.PkValue = parseInt(params.pk);
+            }
+        }
+    }
+
+    if(SkType === 'S' && SkName) {
+
+        event.SkValue = params.sk.toString();
+    } else {
+
+        if(!isNaN(params.sk)) {
+            if(params.sk.indexOf(".") > -1) {
+                event.SkValue = parseFloat(params.sk);
+            } else {
+                event.SkValue = parseInt(params.sk);
+            }
+        }
+
+    }
+
+
+    item = await handler(event);
 
 
     return {
         params:params,
         metadata:metadata,
         item:item?.Item,
-        capacity:item?.ConsumedCapacity?.CapacityUnits
+        capacity:item?.ConsumedCapacity?.CapacityUnits,
+        error:item?.error
     };
 };
 
-export default function TableGetAction(params) {
+export default function TableGetActionPkSk(params) {
 
     const data = useLoaderData();
 
     const stats = {rowCount: data?.item ? 1 : 0};
     stats.ConsumedCapacity = data?.capacity;
-    stats.LastEvaluatedKey =  data?.lek ? data.lek : null;
+    const error = data?.error;
+
+
+    const [gsi, setGsi] = React.useState('');  // GSI hover to preview feature
+
+    const payload = error ?
+        (<div className="errorPanel">{error.name}<br/>{error.message}</div>) :
+        (<Item  gsi={gsi} />);
+
 
     return (<div>
 
-        <Menu region={data.params.region} table={data.params.table} stats={stats} pk={data.params.pk} sk={data.params.sk}/>
+        <Menu region={data.params.region} table={data.params.table} stats={stats} pk={data.params.pk} sk={data.params.sk} gsi={gsi} setGsi={setGsi} />
 
-        <Item />
+        {payload}
 
 
     </div>);

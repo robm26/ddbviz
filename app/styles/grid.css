@@ -1,3 +1,6 @@
+.numberColor {
+    color:orange;
+}
 
 .tableTable table {
     background-color:whitesmoke;
@@ -66,11 +69,15 @@
     text-decoration: none;
 }
 
-
+.itemTable th {
+    color:gray;
+    font-size:smaller;
+}
 
 .itemTable .tdPK {
     vertical-align:middle;
     padding-left:11px;
+
 }
 .itemTable .tdPKhidden {
     vertical-align:middle;
@@ -89,6 +96,16 @@
     color:darkgoldenrod !important;
     padding-left:11px;
     font-weight:bold;
+}
+
+.itemTable .gsiPkLink {
+    color:blue;
+
+}
+
+.itemTable .gsiSkLink {
+    color:green;
+
 }
 
 
@@ -116,14 +133,19 @@
 }
 
 
-
-
-
 .itemTable .emptyGridCell {
     background-color:whitesmoke;
 
 }
 
+.itemTable  button {
+    width:100%;
+    color:dimgrey;
+    padding-left:5px;
+    padding-right:5px;
+    border:none;
+
+}
 
 [stripe^='pk0'] {
     background-color: lightblue ;

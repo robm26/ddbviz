@@ -19,6 +19,8 @@ export function Item(props) {
     const item = data?.item;
     const params = data?.params;
 
+    const gsi = props?.gsi; // gsi preview
+
     if(!item) {
         return (<p>0 items</p>);
     }
@@ -31,6 +33,38 @@ export function Item(props) {
     if(ks.length > 1) {
         SkName = ks[1].AttributeName;
     }
+
+
+    let gsiProjectedAttrs = [];
+    let gsiProjectionType;
+    let gsiPreviewPk;
+    let gsiPreviewSk;
+
+    if(gsi) { // gsi preview
+        const previewGsi = data.metadata.GlobalSecondaryIndexes.filter(item=>item.IndexName === gsi)[0];
+
+        gsiProjectionType = previewGsi?.Projection?.ProjectionType;
+
+        gsiPreviewPk = previewGsi.KeySchema[0].AttributeName;
+        gsiProjectedAttrs.push(gsiPreviewPk);
+
+        if(previewGsi.KeySchema.length > 1) {
+            gsiPreviewSk = previewGsi.KeySchema[1].AttributeName;
+            gsiProjectedAttrs.push(gsiPreviewSk);
+        }
+
+        if(gsiProjectionType === 'INCLUDE') {
+            const includedAttrs = previewGsi?.Projection?.NonKeyAttributes;
+            gsiProjectedAttrs = gsiProjectedAttrs.concat(includedAttrs);
+
+
+        } else if (gsiProjectionType === 'ALL') {
+            gsiProjectedAttrs = [];
+
+        }
+
+    }
+
 
     const tableHeaders = (<>
         <tr><th>attribute</th><th>value</th></tr>
@@ -57,23 +91,65 @@ export function Item(props) {
 
             const attrValue = item[attr][attrValType];
 
-            const attrValDisplay = (typeof attrValue === 'object' ? (<textarea rows="10" cols="40" defaultValue={JSON.stringify(attrValue, null, 2)} />) : attrValue);
+            let style1 = { 'backgroundColor' : 'lightgray',  'padding':'5px', 'color': 'gray'};  // whole cell (text value)
+            let style2 = { 'backgroundColor' : 'gainsboro',  'padding':'5px', 'color': 'dimgray'};  // whole cell (text value)
+            let style3 = {};
+
+            let show = true;
+            if(gsi) {
+
+
+                if(
+                    attrList.includes(gsiPreviewPk)
+                    && (!gsiPreviewSk || attrList.includes(gsiPreviewSk))
+                    && (gsiProjectionType == 'ALL' || gsiProjectedAttrs.includes(attr))
+                ) {
+                    if(gsiPreviewPk === attr) {
+                        style2.color = 'darkorchid';
+                        style2.fontWeight = 'bold';
+                    }
+
+                    if(gsiPreviewSk === attr) {
+                        style2.color = 'darkgoldenrod';
+                        style2.fontWeight = 'bold';
+                    }
+
+
+
+                } else {
+
+                    style1.color = 'gainsboro';
+                    style2.color = 'gainsboro';
+                    style1.backgroundColor = 'whitesmoke';
+                    style2.backgroundColor = 'whitesmoke';
+                    style3.color = 'gainsboro';
+                    style3.backgroundColor = 'whitesmoke';
+                    style3.border = '1px solid gainsboro';
+                }
+
+
+            }
+
+            const attrValDisplay = (typeof attrValue === 'object' ?
+                (<textarea rows="10" cols="40" style={style3} defaultValue={JSON.stringify(attrValue, null, 2)} />) :
+                attrValue);
 
             return (<tr key={attr}>
-                <td className="itemAttrName">{attr}</td>
-                <td className="itemAttrValue">{attrValDisplay}</td>
+                <td style={style1}>{attr}</td>
+                <td style={style2}>
+
+                    {attrValDisplay}
+
+                </td>
+
             </tr>);
         })
     }</tbody>);
 
 
-    const tab = (<table className="itemTable" suppressHydrationWarning>
+    const tab = (<table className="itemTable" >
         <thead>{tableHeaders}</thead>
-
         {rows}
-
-        {/*<tr><th><br/><br/>⬅️️</th><th><br/><br/>➡️</th></tr>*/}
-
     </table>);
 
 

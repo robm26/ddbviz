@@ -3,26 +3,47 @@ import { LambdaClient, InvokeCommand } from "@aws-sdk/client-lambda";
 
 import {handler} from './index.js';
 
-const region       = 'us-east-2'; //  DDB target region
+let region       = 'us-east-2'; //  DDB target region
+
 
 const lambdaRegion = 'us-west-1';
 
 const requestBody = {
     'Region': region,
-    'TableName': 'Elements',
+    'TableName': 'Customer360',
     'ActionName': 'get',
-    'PkName': 'Name',
-    'PkValue': 'Gold',
-    'SkName': '',
-    'SkValue': '',
+    'PkName': 'pkey',
+    'PkValue': 'cust101',
+    'SkName': 'skey',
+    'SkValue': '20191104',
     'ReturnFormat': 'both'
 };
 
 
 const executeFunction = async (requestBody) => {
 
+
+
     let response;
     const myArgs = process.argv.slice(2);
+
+
+    // if(!isNaN(requestBody.PkValue)) {
+    //     if(requestBody.PkValue.indexOf(".") > -1) {
+    //         requestBody.PkValue = parseFloat(requestBody.PkValue);
+    //     } else {
+    //         requestBody.PkValue = parseInt(requestBody.PkValue);
+    //     }
+    // }
+    //
+    // if(!isNaN(requestBody.SkValue)) {
+    //
+    //     if(requestBody.SkValue.indexOf(".") > -1) {
+    //         requestBody.SkValue = parseFloat(requestBody.SkValue);
+    //     } else {
+    //         requestBody.SkValue = parseInt(requestBody.SkValue);
+    //     }
+    // }
 
 
     if(myArgs.length>0 && myArgs[0] === 'local'){   // ******* execute local source file index.js

@@ -44,12 +44,9 @@ export default function TableDetails() {
     const data = useLoaderData();
 
     if(!data.metadata)  {
-        return (<p>Error getting table metadata for {data.params.table}</p>);
+        return (<div className="errorPanel">Error getting table metadata for {data.params.table}</div>);
     }
 
-    // console.log('loader data\n' + JSON.stringify(data));
-
-    // const [items, setItems] = React.useState([{PK:'cust100', SK:'1'},{PK:'cust100', SK:'2'}]);
 
     const requestBody = {
         'Region': data.params.region,
@@ -64,8 +61,6 @@ export default function TableDetails() {
     return (
         <div className="TableDetails">
             <Menu region={data.params.region} table={data.params.table} />
-
-            {/*<TableSummary metadata={data.metadata}/>*/}
 
         </div>
     );

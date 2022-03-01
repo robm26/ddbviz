@@ -9,18 +9,18 @@ const lambdaRegion = 'us-west-1';
 
 const requestBody = {
     'Region': region,
-    'TableName': 'VisitDay',
+    'TableName': 'Jersey',
     'ActionName': 'query',
-    'PkName': 'Day',
-    'PkValue': '20200219',
-    'SkName': 'Name',
-    'SkValue': 'H*',
+    'PkName': 'PK',
+    'PkValue': '2021ee',
+    'SkName': 'SK',
+    'SkValue': null,
     'ScanCount': 10,
     'ScanLimit': 10,
     'ReturnFormat': 'both'
 };
 
-requestBody.IndexName = 'gsi1';
+// requestBody.IndexName = 'GSI-Product';
 
 
 const executeFunction = async (requestBody) => {
@@ -31,9 +31,14 @@ const executeFunction = async (requestBody) => {
 
     if(myArgs.length>0 && myArgs[0] === 'local'){   // ******* execute local source file index.js
 
-        response = await handler(requestBody);
+        try {
+            response = await handler(requestBody);
+            console.log(response);
 
-        console.log(response.ScannedCount);
+        } catch (error) {
+
+            console.log(JSON.stringify(error, null, 2));
+        }
 
 
     } else {               // ******* invoke remote Lambda function (must deploy it first)

@@ -37,7 +37,7 @@ export const loader = async ({ params }) => {
 
     let item = {};
 
-    item = await handler({
+    let event = {
         Region:params.region,
         TableName:tableName,
         ActionName:'get',
@@ -46,30 +46,40 @@ export const loader = async ({ params }) => {
         SkName: '',
         SkValue: '',
         ReturnFormat:"both"
-    });
+    };
+
+
+    item = await handler(event);
 
 
     return {
         params:params,
         metadata:metadata,
         item:item?.Item,
-        capacity:item?.ConsumedCapacity?.CapacityUnits
+        capacity:item?.ConsumedCapacity?.CapacityUnits,
+        error:item?.error
     };
 };
 
-export default function TableGetAction(params) {
+export default function TableGetActionPk(params) {
 
     const data = useLoaderData();
 
     const stats = {rowCount: data?.items?.length};
     stats.ConsumedCapacity = data?.capacity;
-    stats.LastEvaluatedKey =  data?.lek ? data.lek : null;
+    const error = data?.error;
+
+    const [gsi, setGsi] = React.useState('');  // GSI hover to preview feature
+
+    const payload = error ?
+        (<div className="errorPanel">{error.name}<br/>{error.message}</div>) :
+        (<Item  gsi={gsi} />);
 
     return (<div>
 
-        <Menu region={data.params.region} table={data.params.table} stats={stats} pk={data.params.pk} sk={data.params.sk}/>
+        <Menu region={data.params.region} table={data.params.table} stats={stats} pk={data.params.pk} sk={data.params.sk} gsi={gsi} setGsi={setGsi} />
 
-        <Item />
+        {payload}
 
 
     </div>);
