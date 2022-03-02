@@ -51,6 +51,10 @@
     color:white;
 }
 
+.itemTable {
+    table-layout:fixed;
+}
+
 .itemTable td {
     /*color:dimgray;*/
     /*background-color:gainsboro;*/
@@ -72,6 +76,7 @@
 .itemTable th {
     color:gray;
     font-size:smaller;
+    text-align: left;
 }
 
 .itemTable .tdPK {
@@ -145,6 +150,9 @@
     padding-right:5px;
     border:none;
 
+}
+.scratch {
+    color: #ecd1d1;
 }
 
 [stripe^='pk0'] {

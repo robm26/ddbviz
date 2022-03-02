@@ -9,18 +9,18 @@ const lambdaRegion = 'us-west-1';
 
 const requestBody = {
     'Region': region,
-    'TableName': 'Jersey',
+    'TableName': 'Customer360',
     'ActionName': 'query',
-    'PkName': 'PK',
-    'PkValue': '2021ee',
-    'SkName': 'SK',
-    'SkValue': null,
+    'PkName': 'pkey1',
+    'PkValue': 'SUPPORT',
+    'SkName': 'skey1',
+    'SkValue': '20191107',
     'ScanCount': 10,
     'ScanLimit': 10,
     'ReturnFormat': 'both'
 };
 
-// requestBody.IndexName = 'GSI-Product';
+requestBody.IndexName = 'gsi1';
 
 
 const executeFunction = async (requestBody) => {

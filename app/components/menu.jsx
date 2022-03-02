@@ -229,13 +229,17 @@ export function Menu(params) {
 
     }
 
+    let regionLabel = 'region: ';
+    if(params?.region) {
+        regionLabel = null;
+    }
     return (
         <div className="menuContainer">
 
             <ul>
                 <li key="1" ><Link className="homeLink" to="/">ddb viz</Link><br/></li>
 
-                <li key="2" className="regionWord" >region: </li>
+                <li key="2" className="regionWord" >{regionLabel}</li>
 
                 {regionList.map((region)=> {
                     let cn;

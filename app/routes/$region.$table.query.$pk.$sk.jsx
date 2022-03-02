@@ -55,14 +55,14 @@ export const loader = async ({ params }) => {
     };
 
 
-    if(!isNaN(params.pk)) {
+    if(PkType === 'N' && !isNaN(params.pk)) {
         if(params.pk.indexOf(".") > -1) {
             event.PkValue = parseFloat(params.pk);
         } else {
             event.PkValue = parseInt(params.pk);
         }
     }
-    if(!isNaN(params.sk)) {
+    if(SkType === 'N' && !isNaN(params.sk)) {
 
         if(params.sk.indexOf(".") > -1) {
             event.SkValue = parseFloat(params.sk);

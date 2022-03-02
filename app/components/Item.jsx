@@ -66,9 +66,7 @@ export function Item(props) {
     }
 
 
-    const tableHeaders = (<>
-        <tr><th>attribute</th><th>value</th></tr>
-    </>);
+    const tableHeaders = (<tr><th>attribute</th><th>value</th></tr>);
 
     let attrList = Object.keys(item);
 
@@ -76,10 +74,10 @@ export function Item(props) {
 
     attrList.sort(function(a, b){
         // console.log('sort ' + Object.keys(item[a])[0] + ' ' + Object.keys(item[b])[0]);
-        const x = Object.keys(item[a])[0];
-        const y = Object.keys(item[b])[0];
+        const x = item[a][Object.keys(item[a])[0]].length;
+        const y = item[b][Object.keys(item[b])[0]].length;
 
-        return x < y ? 1 : -1;
+        return x > y ? 1 : -1;
     });
 
     const rows = (<tbody >
@@ -91,8 +89,8 @@ export function Item(props) {
 
             const attrValue = item[attr][attrValType];
 
-            let style1 = { 'backgroundColor' : 'lightgray',  'padding':'5px', 'color': 'gray'};  // whole cell (text value)
-            let style2 = { 'backgroundColor' : 'gainsboro',  'padding':'5px', 'color': 'dimgray'};  // whole cell (text value)
+            let style1 = { 'backgroundColor' : 'silver',  'padding':'5px', 'color': 'gray'};  //  attr name
+            let style2 = { 'backgroundColor' : 'gainsboro',  'padding':'5px', 'color': 'dimgray', 'wordWrap':'break-word'};  // text value
             let style3 = {};
 
             let show = true;
@@ -114,8 +112,6 @@ export function Item(props) {
                         style2.fontWeight = 'bold';
                     }
 
-
-
                 } else {
 
                     style1.color = 'gainsboro';
@@ -126,7 +122,6 @@ export function Item(props) {
                     style3.backgroundColor = 'whitesmoke';
                     style3.border = '1px solid gainsboro';
                 }
-
 
             }
 
