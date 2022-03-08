@@ -60,8 +60,8 @@
     /*background-color:gainsboro;*/
 
     padding-bottom:8px;
-    padding-left:3px;
-    padding-right:3px;
+    padding-left:5px;
+    padding-right:5px;
     border-left:1px solid whitesmoke;
     border-bottom: 1px solid whitesmoke;
     vertical-align:top;
@@ -151,8 +151,43 @@
     border:none;
 
 }
+
+.statsTable {
+    padding:6px;
+    text-align:left;
+
+    /*border-collapse: collapse;*/
+}
+
+.OnDemand {
+    background-color: #dad9c6 !important;
+}
+.Provisioned {
+    background-color: #d1d8e7 !important;
+}
+
+.statsTableHeader {
+    background-color: silver;
+    color:dimgray;
+    padding:8px;
+    text-align:center;
+
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.statsTableData {
+    background-color: gainsboro;
+    color:black;
+    padding:8px;
+    text-align:left;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+
+}
+
 .scratch {
-    color: #ecd1d1;
+    color: lime;
 }
 
 [stripe^='pk0'] {

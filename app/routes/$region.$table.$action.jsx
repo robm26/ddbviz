@@ -2,16 +2,13 @@ import {useLoaderData} from "remix";
 
 import { Menu }     from "~/components/menu";
 import { ItemGrid } from "~/components/ItemGrid";
-import {handler} from "../lambda/src";
-import {getTableMetadata} from "../components/ddb";
+import {handler} from "~/lambda/src";
 
 export const action = async ({ request }) => {
     return null;
 };
 
 export const loader = async ({ params }) => {
-    // console.log('params\n' + JSON.stringify(params,null,2));
-
 
     let tableName = params.table;
     let indexName = '';
@@ -21,8 +18,7 @@ export const loader = async ({ params }) => {
         tableName = tableName.substring(0, caretPosition);
     }
 
-    const metadata = await getTableMetadata(params.region, tableName);
-
+    const metadata = await handler({'Region': params.region, 'ActionName': 'describe', 'TableName': tableName});
 
     let items = [];
 
@@ -44,7 +40,7 @@ export const loader = async ({ params }) => {
 
     return {
         params:params,
-        metadata:metadata,
+        metadata:metadata['Table'],
         items:items?.Items,
         capacity:items?.ConsumedCapacity?.CapacityUnits,
         lek:items?.LastEvaluatedKey,

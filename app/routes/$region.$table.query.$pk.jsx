@@ -2,8 +2,7 @@ import {useLoaderData} from "remix";
 
 import { Menu }     from "~/components/menu";
 import { ItemGrid } from "~/components/ItemGrid";
-import {handler} from "../lambda/src";
-import {getTableMetadata} from "../components/ddb";
+import {handler} from "~/lambda/src";
 
 
 export const action = async ({ request }) => {
@@ -22,7 +21,10 @@ export const loader = async ({ params }) => {
         tableName = tableName.substring(0, caretPosition);
     }
 
-    const metadata = await getTableMetadata(params.region, tableName);
+    // const metadata = await getTableMetadata(params.region, tableName);
+
+    const md = await handler({'Region': params.region, 'ActionName': 'describe', 'TableName': tableName});
+    const metadata = md.Table;
 
     let ks = metadata.KeySchema;
     let ads = metadata.AttributeDefinitions;

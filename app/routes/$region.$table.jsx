@@ -1,16 +1,11 @@
 import {
-    Form,
-    Link, useLoaderData, useLocation
+    useLoaderData, useLocation
 } from "remix";
 
-
-import { ItemGrid } from "../components/ItemGrid";
 import { Menu }     from "~/components/menu";
 // import { TableSummary } from "../components/TableSummary";
-import { getTableMetadata } from "../components/ddb";
 
 import { handler } from "../lambda/src/index";
-
 
 export const loader = async ({ params }) => {
 
@@ -20,12 +15,17 @@ export const loader = async ({ params }) => {
         tableName = tableName.substring(0, caretPosition);
     }
 
+    const requestBody = {
+        'Region': params.region,
+        'ActionName': 'describe',
+        'TableName': tableName
+    };
 
-    const metadata = await getTableMetadata(params.region, tableName);
+    const metadata = await handler(requestBody);
 
     return {
         params:params,
-        metadata:metadata
+        metadata:metadata['Table']
         // items:items
     };
 };

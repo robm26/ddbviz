@@ -175,6 +175,21 @@ export function Menu(params) {
         const pkAction = skName || indexName ? 'query' : 'get';
         const skAction = indexName ? 'query' : getmode;
 
+        let lek = stats?.LastEvaluatedKey;
+        let lekTable;
+        if(lek) {
+            lekTable = (<div className="lekTooltip">
+                <span className="lekText">Last Evaluated Key; more remains after this item</span>
+                <table className='lekTable'><tbody>{Object.keys(stats.LastEvaluatedKey).map((key)=>{
+                    let val = lek[key][Object.keys(lek[key])[0]];
+                    if(key === pkName) {
+                        val = (<Link to={path + '/query/' + val}>{val}</Link>)
+                    }
+                return (<tr key={val}><td>{val}</td></tr>);
+            })}</tbody></table>
+
+            </div>);
+        }
 
         readForm = (<Form  method="post"  >
             <table className="readFormTable">
@@ -205,7 +220,7 @@ export function Menu(params) {
 
                     {stats?.rowCount ? (<div  >{stats.rowCount + ' rows' } <br/>
                         {stats?.ConsumedCapacity} RCU <br/>
-                        {stats?.LastEvaluatedKey ? 'LEK : ' + JSON.stringify(stats.LastEvaluatedKey) : null}
+                        {stats?.LastEvaluatedKey ? lekTable : null}
                     </div>) : null}
                 </td>
             </tr>

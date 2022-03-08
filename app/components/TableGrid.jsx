@@ -53,13 +53,31 @@ export function TableGrid(props) {
     }
     let rows = [];
 
+
+
     props.metadatas.map((table)=>{
 
         let SizeMB = table.TableSizeBytes / (1024 * 1024);
+
+        let GsiSize = 0;
+        if(table?.GlobalSecondaryIndexes) {
+            table.GlobalSecondaryIndexes.map((idx)=> {
+                GsiSize += idx?.IndexSizeBytes;
+            });
+        }
+
+        let TotalSizeMB = SizeMB + (GsiSize / (1024 * 1024));
+
         if(SizeMB > 20) {
             SizeMB = Math.round(SizeMB);
         } else {
             SizeMB = Math.round(SizeMB * 10000)/10000;
+        }
+
+        if(TotalSizeMB > 20) {
+            TotalSizeMB = Math.round(TotalSizeMB);
+        } else {
+            TotalSizeMB = Math.round(TotalSizeMB * 10000)/10000;
         }
 
         let CapacityMode = 'PROVISIONED';
@@ -69,13 +87,19 @@ export function TableGrid(props) {
         let ProvisionedRCU = table?.ProvisionedThroughput?.ReadCapacityUnits;
         let ProvisionedWCU = table?.ProvisionedThroughput?.WriteCapacityUnits;
         let GsiCount = 0;
-        if(table?.GlobalSecondaryIndexes) {
+        if(table?.GlobalSecondaryIndexes ) {
             GsiCount = table.GlobalSecondaryIndexes.length;
-        }
-        // let storageCost = SizeMB * prices[region]
+            if (CapacityMode === 'PROVISIONED') {
+                table.GlobalSecondaryIndexes.map((idx)=> {
+                    ProvisionedRCU += idx.ProvisionedThroughput?.ReadCapacityUnits;
+                    ProvisionedWCU += idx.ProvisionedThroughput?.WriteCapacityUnits;
+                });
+            }
 
-        let StorageCostStd = SizeMB * prices[region].standard.storage / 1024;
-        let StorageCostIA = SizeMB * prices[region].infrequentAccess.storage / 1024;
+        }
+
+        let StorageCostStd = TotalSizeMB * prices[region].standard.storage / 1024;
+        let StorageCostIA = TotalSizeMB * prices[region].infrequentAccess.storage / 1024;
 
         let ReadCostStd = ProvisionedRCU * prices[region].standard.provisionedRCU * 24 * 30;
         let ReadCostIA = ProvisionedRCU * prices[region].infrequentAccess.provisionedRCU * 24 * 30;
@@ -94,6 +118,7 @@ export function TableGrid(props) {
             GsiCount:GsiCount,
             ItemCount:table.ItemCount,
             SizeMB:SizeMB,
+            TotalSizeMB:TotalSizeMB,
             CapacityMode:CapacityMode,
             ProvisionedRCU:ProvisionedRCU,
             ProvisionedWCU:ProvisionedWCU,
@@ -123,14 +148,16 @@ export function TableGrid(props) {
     const tabhead = (
         <thead>
         <tr>
-            <th colSpan="7"></th><th colSpan="9" ><div className="monthlyLabel">Monthly Cost in USD</div></th>
+            <th colSpan="8"></th><th colSpan="9" ><div className="monthlyLabel">Monthly Cost in USD</div></th>
         </tr>
         <tr>
             <th><button onClick={()=>{sortSorter('TableName')}}>Table Name</button></th>
-            <th><button onClick={()=>{sortSorter('GsiCount')}}>GSI Count</button></th>
-
             <th><button onClick={()=>{sortSorter('ItemCount')}}>Item Count</button></th>
             <th><button onClick={()=>{sortSorter('SizeMB')}}>Size in MB</button></th>
+            <th><button onClick={()=>{sortSorter('TotalSizeMB')}}>Size with GSIs</button></th>
+
+            <th><button onClick={()=>{sortSorter('GsiCount')}}>GSI Count</button></th>
+
             <th><button onClick={()=>{sortSorter('CapacityMode')}}>Capacity Mode</button></th>
             <th><button onClick={()=>{sortSorter('ProvisionedRCU')}}>Provisioned RCU</button></th>
             <th><button onClick={()=>{sortSorter('ProvisionedWCU')}}>Provisioned WCU</button></th>
@@ -164,10 +191,12 @@ export function TableGrid(props) {
                             {row.TableName}
                         </Link>
                     </td>
-                    <td>{row.GsiCount}</td>
-                    <td>{row.ItemCount}</td>
+                    <td>{row.ItemCount.toLocaleString()}</td>
                     <td>{row.SizeMB.toLocaleString()}</td>
-                    <td>{row.CapacityMode}</td>
+                    <td>{row.TotalSizeMB.toLocaleString()}</td>
+
+                    <td>{row.GsiCount}</td>
+                    <td className={row.CapacityMode === 'ON DEMAND' ? 'OnDemand' : 'Provisioned'} >{row.CapacityMode}</td>
                     <td>{row.ProvisionedRCU === 0 ? '-' : row.ProvisionedRCU}</td>
                     <td>{row.ProvisionedWCU === 0 ? '-' : row.ProvisionedWCU}</td>
                     <td>{rounder(row.StorageCostStd)}</td>

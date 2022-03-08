@@ -2,10 +2,9 @@ import {
     useLoaderData,
 } from "remix";
 
-
 import {TableGrid} from "../components/TableGrid";
 
-import {listTables, getTableMetadata} from "../components/ddb";
+import {handler} from '~/lambda/src';
 
 import { Menu } from "~/components/menu";
 
@@ -16,13 +15,25 @@ export const action = async ({ request }) => {
 export const loader = async ({ params, request }) => {
 
 
-    const tables = await listTables(params.region);
+    // const tables = await listTables(params.region);
+    const requestBody = {
+        'Region': params.region,
+        'ActionName': 'list'
+    };
+    const tables = await handler(requestBody);
 
     let tableMetadatas = [];
 
-    for(table of tables) {
-        const metadata = await getTableMetadata(params.region, table);
-        tableMetadatas.push(metadata);
+    for(table of tables.TableNames) {
+        const requestBody = {
+            'Region': params.region,
+            'ActionName': 'describe',
+            'TableName': table
+        };
+
+        const metadata = await handler(requestBody);
+
+        tableMetadatas.push(metadata?.Table);
     }
 
     return {

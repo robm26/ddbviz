@@ -2,6 +2,7 @@ import {
     DynamoDB,
     DynamoDBClient,
     ListTablesCommand,
+    DescribeTableCommand,
     ScanCommand,
     QueryCommand,
     GetItemCommand
@@ -23,7 +24,8 @@ export async function handler(event) {
     let SkValue = event?.SkValue;
 
     const ScanCount = event?.ScanCount || 1;
-    const ScanLimit = event?.ScanLimit;
+    let ScanLimit = event?.ScanLimit;
+    ScanLimit = 100;
     const ReturnFormat = event?.ReturnFormat || 'data';
 
     const PkType = typeof PkValue === 'string' ? 'S' : 'N';
@@ -38,6 +40,7 @@ export async function handler(event) {
     if(Region === 'localhost:8000') {
         endpointURL = 'http://' + Region
     }
+
 
     let params = {
         TableName: TableName,
@@ -153,6 +156,18 @@ export async function handler(event) {
 
             results = await client.send(new GetItemCommand(params));
 
+        }
+
+        if(ActionName === 'list') {
+
+            results = await client.send(new ListTablesCommand(params));
+        }
+
+        if(ActionName === 'describe') {
+            params = {
+                TableName: TableName
+            };
+            results = await client.send(new DescribeTableCommand(params));
         }
 
         return results;

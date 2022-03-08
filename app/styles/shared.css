@@ -130,14 +130,6 @@ a {
     color:grey;
 }
 
-.statsDiv {
-    background-color: gainsboro;
-    color:dimgray;
-    padding:4px;
-    text-align:center;
-
-    border-radius:5px;
-}
 
 .itemTableControls {
     padding:5px;
@@ -154,6 +146,39 @@ a {
     border-radius:6px;
     margin-left:5px;
 
+}
+
+.lekTable {
+    background-color: silver;
+    color:grey;
+    padding:2px;
+    margin-top:10px;
+    font-size:small;
+    border-radius:6px;
+}
+
+.lekTooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.lekTooltip .lekText {
+    visibility: hidden;
+    width: 120px;
+    font-size:small;
+    background-color: grey;
+    color: gainsboro;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 1;
+    opacity: 0.9;
+
+}
+.lekTooltip:hover .lekText {
+    visibility: visible;
 }
 
 textarea {
