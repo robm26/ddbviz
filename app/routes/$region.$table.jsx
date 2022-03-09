@@ -47,7 +47,7 @@ export default function TableDetails() {
     if(!data.metadata)  {
         return (<div className="errorPanel">Error getting table metadata for {data.params.table}</div>);
     }
-    
+
 
     return (
         <div className="TableDetails">

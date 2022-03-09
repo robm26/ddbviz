@@ -215,6 +215,16 @@ button:hover {
 
 }
 
+.chart {
+    background-color:lightgray;
+    margin:3px;
+    margin-top:8px;
+    padding:6px;
+    border-radius:5px;
+    width:600px;
+
+}
+
 .statsDiv {
     color:gray;
     padding:5px;
