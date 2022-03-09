@@ -1,5 +1,6 @@
 import {
-    useLoaderData, useLocation
+    useLoaderData, useLocation,
+    redirect
 } from "remix";
 
 import { Menu }     from "~/components/menu";
@@ -26,7 +27,6 @@ export const loader = async ({ params }) => {
     return {
         params:params,
         metadata:metadata['Table']
-        // items:items
     };
 };
 
@@ -40,27 +40,19 @@ export const action = async ({request}) => {
 };
 
 export default function TableDetails() {
+
     const location = useLocation();
     const data = useLoaderData();
 
     if(!data.metadata)  {
         return (<div className="errorPanel">Error getting table metadata for {data.params.table}</div>);
     }
-
-
-    const requestBody = {
-        'Region': data.params.region,
-        'TableName': data.params.region,
-        'ScanCount': 2,
-        'ScanLimit': 3,
-        'ReturnFormat': 'both'
-    };
-
-
+    
 
     return (
         <div className="TableDetails">
             <Menu region={data.params.region} table={data.params.table} />
+
 
         </div>
     );

@@ -187,7 +187,7 @@ export function TableGrid(props) {
             {sortedRows.map((row)=>{
                 return <tr key={row.TableName}>
                     <td>
-                        <Link to={row.TableName} state={row.Metadata} >
+                        <Link to={row.TableName + '/stats'} state={row.Metadata} >
                             {row.TableName}
                         </Link>
                     </td>

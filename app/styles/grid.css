@@ -158,6 +158,16 @@
 
     /*border-collapse: collapse;*/
 }
+.statsRawTable {
+    padding:5px;
+    background-color: gainsboro;
+    border-radius:6px;
+}
+.statsRawTable td {
+    padding:5px;
+    background-color:lightgrey;
+
+}
 
 .OnDemand {
     background-color: #dad9c6 !important;

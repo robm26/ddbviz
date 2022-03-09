@@ -8,6 +8,8 @@ import {
     GetItemCommand
 } from "@aws-sdk/client-dynamodb";
 
+import { CloudWatchClient, GetMetricDataCommand } from "@aws-sdk/client-cloudwatch";
+
 // import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 
 
@@ -19,6 +21,8 @@ export async function handler(event) {
     const ActionName = event?.ActionName;
     const PkName = event?.PkName;
     const PkValue = event?.PkValue;
+    const StartDate = event?.StartDate;
+    const EndDate = event?.EndDate;
 
     const SkName = event?.SkName;
     let SkValue = event?.SkValue;
@@ -51,20 +55,6 @@ export async function handler(event) {
     if(IndexName) {
         params.IndexName = IndexName;
     }
-
-    const stats = {
-        Count:0,
-        ScannedCount:0,
-        CapacityUnits:0,
-        Sampled: {
-            Items: 0,
-            ItemCollections: 0,
-            AvgItemsPerCollection: 0,
-            AvgCollectionSize: 0,
-            PKs: {}
-        }
-    };
-
 
     const client = new DynamoDBClient( {
         region:Region,
@@ -124,11 +114,6 @@ export async function handler(event) {
 
             }
 
-            // console.log(kce);
-            // console.log(ean);
-            // console.log(eav);
-
-
             params.KeyConditionExpression = kce;
             params.ExpressionAttributeNames = ean;
             params.ExpressionAttributeValues = eav;
@@ -169,6 +154,52 @@ export async function handler(event) {
             };
             results = await client.send(new DescribeTableCommand(params));
         }
+
+        if(ActionName === 'stats') {
+
+            const queries = [{
+                "Id": "w1",
+                "MetricStat": {
+                    "Metric": {
+                        "Namespace": "AWS/DynamoDB",
+                        "MetricName": "ConsumedWriteCapacityUnits",
+                        "Dimensions": [{"Name": "TableName", "Value": TableName}]
+                    },
+                    "Period": 60, "Stat": "Sum", "Unit": "Count"
+                },
+                "ReturnData": true,
+            },
+                {
+                    "Id": "p1",
+                    "MetricStat": {
+                        "Metric": {
+                            "Namespace": "AWS/DynamoDB",
+                            "MetricName": "ConsumedReadCapacityUnits",
+                            "Dimensions": [{"Name": "TableName", "Value": TableName}]
+                        },
+                        "Period": 60, "Stat": "Sum", "Unit": "Count"
+                    },
+                    "ReturnData": true,
+                }
+            ];
+
+            const params = {
+                "Region": Region,
+                "MetricDataQueries" : queries,
+                "StartTime": new Date(StartDate),
+                "EndTime":   new Date(EndDate)
+            };
+
+            const cwClient = new CloudWatchClient({ region: Region });
+            const command = new GetMetricDataCommand(params);
+            const response = await cwClient.send(command);
+
+            // console.log(JSON.stringify(response, null, 2));
+
+            results = response;
+
+        }
+
 
         return results;
 

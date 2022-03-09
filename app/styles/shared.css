@@ -191,6 +191,34 @@ button:hover {
     color: white;
 }
 
+.cwForm {
+    background-color: gainsboro;
+    padding:5px;
+    border-radius: 6px;
+    margin-top:5px;
+    color:dimgray;
+    font-size:smaller;
+}
+
+.minutesBack {
+    background-color:whitesmoke;
+    border:none;
+    font-weight:bold;
+    border-radius:4px;
+    color:dimgray;
+    padding:3px;
+    width:60px;
+    text-align: center;
+    font-size: smaller;
+}
+.minutesBackButton {
+
+}
+
+.statsDiv {
+    color:gray;
+    padding:5px;
+}
 .errorPanel {
     background-color: LavenderBlush;
     margin:10px;

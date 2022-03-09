@@ -113,7 +113,7 @@ export function Menu(params) {
                     &nbsp;
                     <Link to={'/' + params.region} ><span className="emoji"> 📙</span></Link>
                     &nbsp;
-                    <Link to={'/' + params.region + '/' + tableName} className={indexName ? null : 'selected'}>
+                    <Link to={'/' + params.region + '/' + tableName + '/stats'} className={indexName ? null : 'selected'}>
 
                         {tableName}
 
