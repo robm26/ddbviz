@@ -66,7 +66,6 @@ export function Menu(params) {
 
     if(params?.table) {
 
-
         const path = '/' + params.region + '/' + params.table;
 
         let maxSize = 0;
@@ -74,6 +73,24 @@ export function Menu(params) {
         const TableSizeBytes = data.metadata.TableSizeBytes;
         const ItemCount = data.metadata.ItemCount;
         const gsis = data.metadata?.GlobalSecondaryIndexes;
+        const replicas = data.metadata?.Replicas;
+        let ReplicaIcons;
+        if(replicas) {
+            ReplicaIcons = (<span >{replicas.map((replica, index) => {
+                const repContinent = replica.RegionName.substring(0,2);
+
+                const repIcon = ['us','ca','sa'].includes(repContinent)
+                    ? '🌎' : ['eu','af','me'].includes(repContinent) ? '🌍' : '🌏';
+
+                return (<span title={'Global Table Replica in ' + replica.RegionName} key={index}>
+                        <Link key={index} className='replicas'
+                              to={'/' + replica.RegionName + '/' + params.table + '/stats'}  >
+                            {repIcon}
+                        </Link></span>);
+            })}</span>);
+        }
+
+        const gts = (<span>{ReplicaIcons}</span>);
 
         let tableName = params.table;
         let indexName;
@@ -117,15 +134,15 @@ export function Menu(params) {
 
                         {tableName}
 
-                    </Link> &nbsp;&nbsp;
+                    </Link> &nbsp;
+                    {gts}
+                    &nbsp;
                     <span className="emoji" >
                         {Math.round(TableSizeBytes/1000).toLocaleString()} KB {ItemCount.toLocaleString()} items
                     </span>
                 </div>
 
-
                 {gsis && gsis.map((item, index)=>{
-
 
                     const gsiSizeRatio = Math.round(100 * item.IndexSizeBytes / TableSizeBytes)/100;
                     const cssBar = 'linear-gradient(90deg, silver ' + gsiSizeRatio*100 + '%, gainsboro ' + (gsiSizeRatio)*100 + '%)';
@@ -179,23 +196,52 @@ export function Menu(params) {
         let lekTable;
         if(lek) {
             lekTable = (<div className="lekTooltip">
-                <span className="lekText">Last Evaluated Key; more remains after this item</span>
+                <span className="lekText">Last Evaluated Key</span>
                 <table className='lekTable'><tbody>{Object.keys(stats.LastEvaluatedKey).map((key)=>{
                     let val = lek[key][Object.keys(lek[key])[0]];
+                    let valx;
                     if(key === pkName) {
-                        val = (<Link to={path + '/query/' + val}>{val}</Link>)
+                        valx = (<Link to={path + '/query/' + val}>{val}</Link>)
                     }
-                return (<tr key={val}><td>{val}</td></tr>);
+                if([pkName, skName].includes(key)) {
+                    return (<tr key={val}><td>{valx}</td></tr>);
+                } else {
+                    return null;
+                }
+
             })}</tbody></table>
 
             </div>);
         }
 
+        let prevNext;
+        let mySk;   // handle queries that return only one item
+
+        if(skName && (data?.items?.length === 1 || data?.item)) {
+            const myItem = data?.item || data?.items[0];
+            const myPk = myItem[pkName][Object.keys(myItem[pkName])[0]];
+
+            if(skName) {
+                mySk = myItem[skName][Object.keys(myItem[skName])[0]];
+            }
+
+            prevNext = (<tr><td/><td/><td>
+                <Link to={path + '/query/' + myPk + '/<' + mySk + '?limit=1'}>
+                    <button className="prev">PREV</button>
+                </Link>
+                &nbsp;
+                <Link to={path + '/query/' + myPk + '/>' + mySk + '?limit=1'}>
+                    <button className="prev">NEXT</button>
+                </Link>
+
+            </td><td/><td/></tr>);
+        }
+
+
         readForm = (<Form  method="post"  >
             <table className="readFormTable">
                 <thead></thead><tbody>
-            <tr>
-                <td className="scanButtonCell">
+            <tr><td className="scanButtonCell">
                         <Link to={path + '/scan'} ><button className="scanButton">SCAN</button>
                         </Link>
                 </td>
@@ -214,9 +260,9 @@ export function Menu(params) {
                     </Link>
                 </td>
 
-                <td rowSpan="2">&nbsp;</td>
+                <td rowSpan="2">&nbsp;&nbsp;&nbsp;</td>
 
-                <td rowSpan="2" className="statsDiv">
+                <td rowSpan="3" className="statsDiv">
 
                     {stats?.rowCount ? (<div  >{stats.rowCount + ' rows' } <br/>
                         {stats?.ConsumedCapacity} RCU <br/>
@@ -224,13 +270,12 @@ export function Menu(params) {
                     </div>) : null}
                 </td>
             </tr>
-            <tr>
-                <td></td>
+            <tr><td></td>
                         <td>{!skName ? null :
                             (<span className="skName">{skName}</span>)}
                         </td>
                         <td>{!skName ? null :
-                            (<input type="text" name="SK" className="skBox" defaultValue={sk} onChange={handleGetbox} />)}
+                            (<input type="text" name="SK" className="skBox" defaultValue={mySk || sk} onChange={handleGetbox} />)}
                         </td>
                 <td>{!skName ? null :
                     <Link to={path + '/' + skAction + '/' + encodeURIComponent(pk1) + '/' + encodeURIComponent(sk1)}>
@@ -238,6 +283,7 @@ export function Menu(params) {
                             {skAction.toUpperCase()}
                         </button></Link>}</td>
             </tr>
+            {/*{prevNext}*/}
             </tbody>
             </table>
         </Form>);
@@ -248,6 +294,11 @@ export function Menu(params) {
     if(params?.region) {
         regionLabel = null;
     }
+
+    const prices = {'DynamoDB-Storage': '0.25'};
+    const pricing = (<li>{JSON.stringify(prices?.children)}</li>);
+    // {"name":["luna","wally"]};
+
     return (
         <div className="menuContainer">
 
@@ -277,7 +328,7 @@ export function Menu(params) {
                 <li>{tableTitle}</li>
                 <li>{readForm}</li>
                 <li>{transitionDisplay()}</li>
-
+                {pricing}
             </ul>
 
         </div>

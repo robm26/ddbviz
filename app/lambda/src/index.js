@@ -8,7 +8,11 @@ import {
     GetItemCommand
 } from "@aws-sdk/client-dynamodb";
 
+import {DynamoDBStreamsClient, DescribeStreamCommand} from "@aws-sdk/client-dynamodb-streams";
+
 import { CloudWatchClient, GetMetricDataCommand } from "@aws-sdk/client-cloudwatch";
+
+import { PricingClient, DescribeServicesCommand, GetProductsCommand } from "@aws-sdk/client-pricing";
 
 // import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 
@@ -24,12 +28,19 @@ export async function handler(event) {
     const StartDate = event?.StartDate;
     const EndDate = event?.EndDate;
 
+    const Field = event?.Field;  // pricing api
+    const Value = event?.Value;
+
     const SkName = event?.SkName;
     let SkValue = event?.SkValue;
 
     const ScanCount = event?.ScanCount || 1;
     let ScanLimit = event?.ScanLimit;
-    ScanLimit = 100;
+    if(!ScanLimit) {
+        ScanLimit = 100;
+    }
+    let ScanForward = true;
+
     const ReturnFormat = event?.ReturnFormat || 'data';
 
     const PkType = typeof PkValue === 'string' ? 'S' : 'N';
@@ -81,7 +92,7 @@ export async function handler(event) {
             eav[":pk"] = {};
             eav[":pk"][PkType] = PkType === 'S' ? PkValue : PkValue.toString();
 
-
+            let sf = true;
             if(SkName && SkValue) {
                 let firstChar;
                 let finalChar;
@@ -112,11 +123,15 @@ export async function handler(event) {
                 eav[":sk"] = {};
                 eav[":sk"][SkType] = SkType === 'S' ? SkValue : SkValue.toString();
 
+                if(params.Limit === 1 && firstChar === '<') {
+                    sf = false;
+                }
             }
 
             params.KeyConditionExpression = kce;
             params.ExpressionAttributeNames = ean;
             params.ExpressionAttributeValues = eav;
+            params.ScanIndexForward = sf;
 
             results = await client.send(new QueryCommand(params));
         }
@@ -158,7 +173,7 @@ export async function handler(event) {
         if(ActionName === 'stats') {
 
             const queries = [{
-                "Id": "w1",
+                "Id": "w",
                 "MetricStat": {
                     "Metric": {
                         "Namespace": "AWS/DynamoDB",
@@ -170,7 +185,7 @@ export async function handler(event) {
                 "ReturnData": true,
             },
                 {
-                    "Id": "p1",
+                    "Id": "r",
                     "MetricStat": {
                         "Metric": {
                             "Namespace": "AWS/DynamoDB",
@@ -180,7 +195,19 @@ export async function handler(event) {
                         "Period": 60, "Stat": "Sum", "Unit": "Count"
                     },
                     "ReturnData": true,
-                }
+                },
+                    {
+                        "Id": "tw",
+                        "MetricStat": {
+                            "Metric": {
+                                "Namespace": "AWS/DynamoDB",
+                                "MetricName": "WriteThrottleEvents",
+                                "Dimensions": [{"Name": "TableName", "Value": TableName}]
+                            },
+                            "Period": 60, "Stat": "Sum", "Unit": "Count"
+                        },
+                        "ReturnData": true,
+                    }
             ];
 
             const params = {
@@ -197,6 +224,74 @@ export async function handler(event) {
             // console.log(JSON.stringify(response, null, 2));
 
             results = response;
+
+        }
+
+
+        if(ActionName === 'pricing') {
+            const client = new PricingClient({ region: 'us-east-1' });
+
+            const params = {
+                ServiceCode: 'AmazonDynamoDB',
+                Filters: [
+                    {'Type': 'TERM_MATCH',
+                     'Field': 'servicecode',
+                     'Value': 'AmazonDynamoDB'},
+
+                    {'Type': 'TERM_MATCH',
+                    'Field': 'regionCode',
+                    'Value': Region}
+                ],
+                FormatVersion: 'aws_v1',
+                MaxResults: 100
+            };
+
+            const command = new GetProductsCommand(params);
+            let priceResults = await client.send(command);
+
+            const priceBook = {};
+
+            priceResults.PriceList.map((offerTxt, index)=> {
+
+                let offer = JSON.parse(offerTxt);
+                let families = [
+                    'Amazon DynamoDB PayPerRequest Throughput',
+                    'Provisioned IOPS',
+                    'Database Storage',
+                    'DDB-Operation-ReplicatedWrite',
+                ];
+
+                if(offer.product.productFamily && families.includes(offer.product.productFamily)) {
+
+                    let priceDimensions = offer?.terms?.OnDemand[Object.keys(offer?.terms?.OnDemand)[0]].priceDimensions;
+                    let price;
+
+                    Object.keys(priceDimensions).map((dim)=>{
+                        if(dim?.pricePerUnit?.USD !== 0.0000000000) {
+                            price = priceDimensions[dim]['pricePerUnit']['USD'];
+                        }
+                    });
+                    priceBook[offer.product?.attributes?.usagetype] = price;
+                }
+            });
+
+            results = {PriceList: priceBook};
+
+        }
+
+
+        if(ActionName === 'streams') {
+
+            const streamsClient = new DynamoDBStreamsClient({ region: Region });
+
+            const params = {
+                /** input parameters */
+            };
+            const command = new DescribeStreamCommand(params);
+            const streamMetadata = await streamsClient.send(command);
+
+
+            results = {'stream': TableName + ' ' + Region + ' ' + 'shows'};
 
         }
 

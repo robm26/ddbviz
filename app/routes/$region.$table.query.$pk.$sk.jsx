@@ -2,6 +2,7 @@ import {useLoaderData} from "remix";
 
 import { Menu }     from "~/components/menu";
 import { ItemGrid } from "~/components/ItemGrid";
+import { Item } from "~/components/Item";
 import {handler} from "~/lambda/src";
 
 export const action = async ({ request }) => {
@@ -9,7 +10,7 @@ export const action = async ({ request }) => {
     return null;
 };
 
-export const loader = async ({ params }) => {
+export const loader = async ({ params, request }) => {
 
     let tableName = params.table;
     let indexName = '';
@@ -35,8 +36,17 @@ export const loader = async ({ params }) => {
     const SkName = ks[1].AttributeName;
     const SkType = ads.filter(item => item.AttributeName === SkName)[0].AttributeType;
 
-
     let items = [];
+
+    const url = new URL(request.url);
+    const limit = url.searchParams.get("limit");
+    let sf = true; // scan forward
+    if(limit && params?.sk.slice(0,1) === '<') {
+        sf = false;
+    }
+
+    console.log(limit ? 'lim':'nolim');
+
 
     let event = {
         Region:params.region,
@@ -48,7 +58,8 @@ export const loader = async ({ params }) => {
         SkName: SkName,
         SkValue: params.sk,
         ScanCount: 1,
-        ScanLimit: 999999,
+        ScanLimit: parseInt(limit) || 99999999,
+        ScanForward: sf,
         ReturnFormat:"both"
     };
 
@@ -68,7 +79,6 @@ export const loader = async ({ params }) => {
             event.SkValue = parseInt(params.sk);
         }
     }
-
 
     items = await handler(event);
 
@@ -94,7 +104,7 @@ export default function TableQueryActionPkSk(params) {
 
     const payload = error ?
         (<div className="errorPanel">{error.name}<br/>{error.message}</div>) :
-        (<ItemGrid  gsi={gsi} />);
+        stats.rowCount === 1 ? (<Item gsi={gsi} />) : (<ItemGrid  gsi={gsi} />) ;
 
     return (<div>
 

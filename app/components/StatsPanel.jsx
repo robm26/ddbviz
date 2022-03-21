@@ -84,7 +84,8 @@ export function StatsPanel(params) {
             return str.slice(0,16);
         }
         if(format === 2) {
-            return str.slice(11,19);
+            console.log(str.slice(11,11));
+            return str.slice(11,16);
         }
 
     }
@@ -95,7 +96,7 @@ export function StatsPanel(params) {
 
         chartData.datasets = [];
 
-        let lineColors = ['orchid', 'dodgerblue'];
+        let lineColors = ['orchid', 'dodgerblue', 'lime', 'goldenrod'];
 
         tables = stats.map((stat, index) => {
 
@@ -157,7 +158,7 @@ export function StatsPanel(params) {
                        defaultValue={minutesBack}/>
                 &nbsp;&nbsp;&nbsp;
                 <Link to={path + '/stats?minutesBack=' + minutesBack }>
-                    <button type="submit" className="minutesBackButton">gather stats</button>
+                    <button type="submit" className="minutesBackButton">GATHER STATS</button>
                 </Link>
                 &nbsp;&nbsp;
                 <span>{label}</span>

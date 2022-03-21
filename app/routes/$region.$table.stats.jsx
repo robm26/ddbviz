@@ -1,4 +1,4 @@
-import {useLoaderData, useSearchParams} from "remix";
+import {useLoaderData, Link} from "remix";
 
 import {Menu}     from "~/components/menu";
 import {StatsPanel}     from "~/components/StatsPanel";
@@ -54,6 +54,8 @@ export const loader = async ({ params, request }) => {
 export default function TableStatsAction(params) {
     const data = useLoaderData();
 
+    const path = '/' + data.params.region + '/' + data.params.table;
+
     const error = data?.error;
 
     const [gsi, setGsi] = React.useState('');  // GSI hover to preview feature
@@ -66,11 +68,15 @@ export default function TableStatsAction(params) {
             table={data.params.table}
         />);
 
+    const streamsLink = (<div className='cwForm'>DynamoDB Streams&nbsp;&nbsp;&nbsp;
+        <Link to={path + '/streams'}><button className=''>DESCRIBE STREAM</button></Link>
+    </div>);
 
     return (<div>
         <Menu region={data.params.region} table={data.params.table}  gsi={gsi} setGsi={setGsi} />
 
         {payload}
+        {streamsLink}
 
     </div>);
 

@@ -16,7 +16,15 @@ export function Item(props) {
     let table = data.params.table;
 
 
-    const item = data?.item;
+    let item;
+    if(data?.item) {
+        item = data.item
+    }
+    if(data?.items) {
+        item = data.items[0];
+    }
+
+
     const params = data?.params;
 
     const gsi = props?.gsi; // gsi preview
@@ -94,13 +102,16 @@ export function Item(props) {
             let style3 = {};
 
             let show = true;
+
             if(gsi) {
 
 
                 if(
-                    attrList.includes(gsiPreviewPk)
+                    (attrList.includes(gsiPreviewPk)
                     && (!gsiPreviewSk || attrList.includes(gsiPreviewSk))
-                    && (gsiProjectionType == 'ALL' || gsiProjectedAttrs.includes(attr))
+                    && (gsiProjectionType == 'ALL' || gsiProjectedAttrs.includes(attr)))
+                    || [PkName, SkName].includes(gsiPreviewPk)
+                    || [PkName, SkName].includes(gsiPreviewSk)
                 ) {
                     if(gsiPreviewPk === attr) {
                         style2.color = 'darkorchid';
@@ -129,14 +140,9 @@ export function Item(props) {
                 (<textarea rows="10" cols="40" style={style3} defaultValue={JSON.stringify(attrValue, null, 2)} />) :
                 attrValue);
 
-            return (<tr key={attr}>
-                <td style={style1}>{attr}</td>
-                <td style={style2}>
-
+            return (<tr key={attr}><td style={style1}>{attr}</td><td style={style2}>
                     {attrValDisplay}
-
                 </td>
-
             </tr>);
         })
     }</tbody>);

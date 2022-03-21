@@ -179,20 +179,21 @@
 .statsTableHeader {
     background-color: silver;
     color:dimgray;
-    padding:8px;
+    padding:4px;
     text-align:center;
-
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    font-size:smaller;
 }
 
 .statsTableData {
     background-color: gainsboro;
     color:black;
-    padding:8px;
+    padding:4px;
     text-align:left;
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    font-size:smaller;
 
 }
 

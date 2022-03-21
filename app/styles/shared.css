@@ -74,6 +74,7 @@
     padding:3px;
 }
 
+
 .spinner {
     float:right;
     margin-top:0px;
@@ -118,9 +119,13 @@ a {
 .readFormTable button {
     color:grey;
     border-radius:5px;
-    width:70px;
+    width:60px;
+    border:none;
 }
 
+.readFormTable td {
+
+}
 
 .tableTitle .selected {
     font-weight:bold;
@@ -145,6 +150,7 @@ a {
     height: 22px;
     border-radius:6px;
     margin-left:5px;
+
 
 }
 
@@ -191,6 +197,16 @@ button:hover {
     color: white;
 }
 
+.prev {
+    background-color: whitesmoke;
+    padding:0px;
+    margin:0px;
+    font-size:x-small !important;
+}
+.replicas {
+    font-size:smaller;
+}
+
 .cwForm {
     background-color: gainsboro;
     padding:5px;
@@ -200,6 +216,11 @@ button:hover {
     font-size:smaller;
 }
 
+.cwForm button {
+    border:none;
+    border-radius:5px;
+    padding:3px;
+}
 .minutesBack {
     background-color:whitesmoke;
     border:none;
@@ -221,7 +242,7 @@ button:hover {
     margin-top:8px;
     padding:6px;
     border-radius:5px;
-    width:600px;
+    width:700px;
 
 }
 

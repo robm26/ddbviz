@@ -84,6 +84,14 @@ export function TableGrid(props) {
         if(table?.BillingModeSummary?.BillingMode === 'PAY_PER_REQUEST') {
             CapacityMode = 'ON DEMAND';
         }
+        let Replicas = [];
+        if(table?.Replicas) {
+            table.Replicas.map((replica)=>{
+                Replicas.push(replica);
+            });
+        }
+
+
         let ProvisionedRCU = table?.ProvisionedThroughput?.ReadCapacityUnits;
         let ProvisionedWCU = table?.ProvisionedThroughput?.WriteCapacityUnits;
         let GsiCount = 0;
@@ -120,6 +128,7 @@ export function TableGrid(props) {
             SizeMB:SizeMB,
             TotalSizeMB:TotalSizeMB,
             CapacityMode:CapacityMode,
+            Replicas:Replicas,
             ProvisionedRCU:ProvisionedRCU,
             ProvisionedWCU:ProvisionedWCU,
             StorageCostStd:StorageCostStd,
@@ -145,6 +154,8 @@ export function TableGrid(props) {
         return 0;
     });
 
+
+
     const tabhead = (
         <thead>
         <tr>
@@ -159,6 +170,7 @@ export function TableGrid(props) {
             <th><button onClick={()=>{sortSorter('GsiCount')}}>GSI Count</button></th>
 
             <th><button onClick={()=>{sortSorter('CapacityMode')}}>Capacity Mode</button></th>
+
             <th><button onClick={()=>{sortSorter('ProvisionedRCU')}}>Provisioned RCU</button></th>
             <th><button onClick={()=>{sortSorter('ProvisionedWCU')}}>Provisioned WCU</button></th>
 
@@ -185,18 +197,33 @@ export function TableGrid(props) {
         <tbody>
 
             {sortedRows.map((row)=>{
+
+                const replicas = (<div >{row?.Replicas.map((replica, index) => {
+                    const repContinent = replica.RegionName.substring(0,2);
+
+                    const repIcon = ['us','ca','sa'].includes(repContinent)
+                        ? '🌎' : ['eu','af','me'].includes(repContinent) ? '🌍' : '🌏';
+
+                    return (<span title={'Global Table Replica in ' + replica.RegionName} key={index}>
+                        <Link key={index} className='replicas'
+                              to={'/' + replica.RegionName + '/' + row.TableName + '/stats'}  >
+                            {repIcon}
+                        </Link></span>);
+                })}</div>)
+
                 return <tr key={row.TableName}>
                     <td>
                         <Link to={row.TableName + '/stats'} state={row.Metadata} >
                             {row.TableName}
                         </Link>
+                        {replicas}
                     </td>
                     <td>{row.ItemCount.toLocaleString()}</td>
                     <td>{row.SizeMB.toLocaleString()}</td>
                     <td>{row.TotalSizeMB.toLocaleString()}</td>
-
                     <td>{row.GsiCount}</td>
                     <td className={row.CapacityMode === 'ON DEMAND' ? 'OnDemand' : 'Provisioned'} >{row.CapacityMode}</td>
+
                     <td>{row.ProvisionedRCU === 0 ? '-' : row.ProvisionedRCU}</td>
                     <td>{row.ProvisionedWCU === 0 ? '-' : row.ProvisionedWCU}</td>
                     <td>{rounder(row.StorageCostStd)}</td>
