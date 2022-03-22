@@ -9,31 +9,32 @@ export const action = async ({ request }) => {
 };
 
 export const loader = async ({ params, request }) => {
-    const url = new URL(request.url);
 
     let tableName = params.table;
 
     const metadata = await handler({'Region': params.region, 'ActionName': 'describe', 'TableName': tableName});
 
-    let streamArn;
-    let streamShards = [];
+    let shards;
+    if(metadata?.Table?.LatestStreamArn) {
 
-
-    let streams = await handler({
-        Region:params.region,
-        TableName:tableName,
-        ActionName: 'streams'
-    });
+        shards = await handler({
+            StreamArn: metadata?.Table?.LatestStreamArn,
+            ActionName: 'streams'
+        });
+    }
 
     return {
         params:params,
         metadata:metadata['Table'],
-        streams:streams
+        shards:shards
     };
 };
 
 export default function TableStatsAction(params) {
     const data = useLoaderData();
+
+    // console.log('     ********** hello streaams');
+    // console.log(Object.keys(data.params).toString());
 
     const error = data?.error;
 
@@ -44,18 +45,16 @@ export default function TableStatsAction(params) {
         (<div className="errorPanel">{error.name}<br/>{error.message}</div>) :
         (<div>
             {data?.metadata?.LatestStreamArn
-                ? 'LatestStreamArn: ' + data?.metadata?.LatestStreamArn
+                ? (<StreamsPanel region={data.params.region} table={data.params.table} shards={data.shards} />)
                 : 'This table does not have Streams enabled.'}
-            <StreamsPanel
-            region={data.params.region}
-            table={data.params.table}
-        /></div>);
+
+        </div>);
 
 
 
     return (<div>
         <Menu region={data.params.region} table={data.params.table}  gsi={gsi} setGsi={setGsi} />
-
+        {/*<span>{data?.metadata?.LatestStreamArn}</span>*/}
         {payload}
 
     </div>);

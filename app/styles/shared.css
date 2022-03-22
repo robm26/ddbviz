@@ -246,6 +246,21 @@ button:hover {
 
 }
 
+.shardPanel {
+    background-color: gainsboro;
+    padding:15px;
+
+    margin-top:5px;
+    margin-left:2px;
+    border-radius:5px;
+    color:dimgray;
+}
+.shardCount {
+    padding-left:5px;
+    padding-right:5px;
+    font-size:x-large;
+    color:dodgerblue;
+}
 .statsDiv {
     color:gray;
     padding:5px;

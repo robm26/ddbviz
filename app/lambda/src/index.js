@@ -221,12 +221,8 @@ export async function handler(event) {
             const command = new GetMetricDataCommand(params);
             const response = await cwClient.send(command);
 
-            // console.log(JSON.stringify(response, null, 2));
-
             results = response;
-
         }
-
 
         if(ActionName === 'pricing') {
             const client = new PricingClient({ region: 'us-east-1' });
@@ -282,16 +278,52 @@ export async function handler(event) {
 
         if(ActionName === 'streams') {
 
-            const streamsClient = new DynamoDBStreamsClient({ region: Region });
+            const activeShards = [];
+            const arn = event?.StreamArn;
+            const reg = arn.split(":")[3];
 
-            const params = {
-                /** input parameters */
+            const streamsClient = new DynamoDBStreamsClient({ region: reg });
+
+            let loop = true;
+            let loopCount = 0;
+            let LastEvaluatedShardId;
+            let params = {
+                'StreamArn': event?.StreamArn,
+                'Limit': 100
             };
-            const command = new DescribeStreamCommand(params);
-            const streamMetadata = await streamsClient.send(command);
 
+            while(loop) {
+                loopCount += 1;
 
-            results = {'stream': TableName + ' ' + Region + ' ' + 'shows'};
+                let streamMetadata;
+                let command;
+
+                try {
+                    command = new DescribeStreamCommand(params);
+                    streamMetadata = await streamsClient.send(command);
+
+                }  catch (error) {
+                    console.log(JSON.stringify(error, null, 2));
+                }
+
+                // console.log('smd\n' + JSON.stringify(streamMetadata));
+
+                LastEvaluatedShardId = streamMetadata['StreamDescription']['LastEvaluatedShardId'];
+                if(LastEvaluatedShardId) {
+                    params['ExclusiveStartShardId'] = LastEvaluatedShardId;
+                } else {
+                    loop = false;
+                }
+
+                streamMetadata['StreamDescription']['Shards'].map((shard, index)=>{
+                    if(!shard['SequenceNumberRange']['EndingSequenceNumber']) {
+                        activeShards.push(shard['ShardId']);
+                    }
+                });
+
+            }
+
+            results = {'activeShards': activeShards};
 
         }
 
