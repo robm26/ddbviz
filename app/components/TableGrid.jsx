@@ -2,11 +2,6 @@ import {
     Link, Form, useLoaderData
 } from "remix";
 
-import {config} from "../configuration";
-
-let prices = config().prices;
-
-let debug = '';
 
 import stylesUrl from "../styles/grid.css";
 
@@ -14,9 +9,6 @@ export const links = () => {
     return [{rel:"stylesheet", href:stylesUrl }];
 };
 
-
-
-let region;
 
 export const loader = async ({ params }) => {
     let region;
@@ -30,13 +22,18 @@ export const loader = async ({ params }) => {
     }
 };
 
-
 export function TableGrid(props) {
 
     const data = useLoaderData();
+    const pricer = data.prices;
 
     let region;
     if(data.region.substring(0,9) === 'localhost') {region = 'us-east-1';} else {region = data.region;}
+
+    let priceRegion = region === 'us-east-1' ? '' : (region.slice(0,2) + region.slice(3,4) + region.split('-')[2] + '-').toUpperCase();
+    if(data.region === 'demo') {
+        priceRegion = '';
+    }
 
     const [sortAttr, setSortAttr] = React.useState('SizeMB');
     const [sortDirection, setSortDirection] = React.useState('1');
@@ -53,8 +50,6 @@ export function TableGrid(props) {
     }
     let rows = [];
 
-
-
     props.metadatas.map((table)=>{
 
         let SizeMB = table.TableSizeBytes / (1024 * 1024);
@@ -67,6 +62,7 @@ export function TableGrid(props) {
         }
 
         let TotalSizeMB = SizeMB + (GsiSize / (1024 * 1024));
+
 
         if(SizeMB > 20) {
             SizeMB = Math.round(SizeMB);
@@ -87,6 +83,8 @@ export function TableGrid(props) {
         let Replicas = [];
         if(table?.Replicas) {
             table.Replicas.map((replica)=>{
+
+
                 Replicas.push(replica);
             });
         }
@@ -103,28 +101,43 @@ export function TableGrid(props) {
                     ProvisionedWCU += idx.ProvisionedThroughput?.WriteCapacityUnits;
                 });
             }
-
         }
 
-        let StorageCostStd = TotalSizeMB * prices[region].standard.storage / 1024;
-        let StorageCostIA = TotalSizeMB * prices[region].infrequentAccess.storage / 1024;
+        // console.log(' ----- ' + Object.keys(pricer));
+        // console.log('-TimedStorage-ByteHrs ['+priceRegion+']: ' + pricer[priceRegion + 'TimedStorage-ByteHrs']);
 
-        let ReadCostStd = ProvisionedRCU * prices[region].standard.provisionedRCU * 24 * 30;
-        let ReadCostIA = ProvisionedRCU * prices[region].infrequentAccess.provisionedRCU * 24 * 30;
+        let StorageCostStd = TotalSizeMB * pricer[priceRegion + 'TimedStorage-ByteHrs'] / 1024;
+        let StorageCostIA = TotalSizeMB * pricer[priceRegion + 'IA-TimedStorage-ByteHrs'] / 1024;
 
-        let WriteCostStd = ProvisionedWCU * prices[region].standard.provisionedWCU * 24 * 30;
-        let WriteCostIA = ProvisionedWCU * prices[region].infrequentAccess.provisionedWCU * 24 * 30;
+        let ReadCostStd = ProvisionedRCU * pricer[priceRegion + 'ReadCapacityUnit-Hrs'] * 24 * 30;
+        let ReadCostIA = ProvisionedRCU * pricer[priceRegion + 'IA-ReadCapacityUnit-Hrs'] * 24 * 30;
+
+        let WriteCostStd = ProvisionedWCU * pricer[priceRegion + 'WriteCapacityUnit-Hrs'] * 24 * 30;
+        let WriteCostIA = ProvisionedWCU * pricer[priceRegion + 'IA-WriteCapacityUnit-Hrs'] * 24 * 30;
 
         let TotalCostStd = StorageCostStd + ReadCostStd + WriteCostStd;
         let TotalCostIA = StorageCostIA + ReadCostIA + WriteCostIA;
         let DeltaIA = TotalCostIA - TotalCostStd;
 
 
+        const gtSize = table?.Replicas?.length + 1 || 1;
+        // console.log(gtSize);
+        const ItemCount = table.ItemCount * gtSize;
+
+        StorageCostStd *= gtSize;
+        StorageCostIA *= gtSize;
+        WriteCostStd *= gtSize;
+        WriteCostIA *= gtSize;
+        SizeMB *= gtSize;
+        TotalSizeMB *= gtSize;
+
+
+
         rows.push({
             TableName:table.TableName,
             IndexName:'-',
             GsiCount:GsiCount,
-            ItemCount:table.ItemCount,
+            ItemCount:ItemCount,
             SizeMB:SizeMB,
             TotalSizeMB:TotalSizeMB,
             CapacityMode:CapacityMode,
@@ -171,8 +184,8 @@ export function TableGrid(props) {
 
             <th><button onClick={()=>{sortSorter('CapacityMode')}}>Capacity Mode</button></th>
 
-            <th><button onClick={()=>{sortSorter('ProvisionedRCU')}}>Provisioned RCU</button></th>
-            <th><button onClick={()=>{sortSorter('ProvisionedWCU')}}>Provisioned WCU</button></th>
+            <th><button onClick={()=>{sortSorter('ProvisionedRCU')}}>Prov. RCU</button></th>
+            <th><button onClick={()=>{sortSorter('ProvisionedWCU')}}>Prov. WCU</button></th>
 
             <th><button onClick={()=>{sortSorter('StorageCostStd')}}>Storage Cost Std</button></th>
             <th><button onClick={()=>{sortSorter('StorageCostIA')}}>Storage Cost IA</button></th>
@@ -191,6 +204,12 @@ export function TableGrid(props) {
         </thead>
     );
 
+    function fc(term) {
+        if(typeof term === 'string') {
+            return parseFloat(term).toLocaleString();
+        } else {return(term).toLocaleString();}
+    }
+
     const tab = (<table className='tableTable'>
 
         {tabhead}
@@ -198,11 +217,14 @@ export function TableGrid(props) {
 
             {sortedRows.map((row)=>{
 
+
                 const replicas = (<div >{row?.Replicas.map((replica, index) => {
                     const repContinent = replica.RegionName.substring(0,2);
 
                     const repIcon = ['us','ca','sa'].includes(repContinent)
                         ? '🌎' : ['eu','af','me'].includes(repContinent) ? '🌍' : '🌏';
+
+
 
                     return (<span title={'Global Table Replica in ' + replica.RegionName} key={index}>
                         <Link key={index} className='replicas'
@@ -233,13 +255,15 @@ export function TableGrid(props) {
                     <td>{rounder(row.WriteCostStd)}</td>
                     <td>{rounder(row.WriteCostIA)} </td>
 
-                    <td className="TotalCostStd">{rounder(row.TotalCostStd)}</td>
-                    <td className="TotalCostIA" >{rounder(row.TotalCostIA)} </td>
+                    <td className="TotalCostStd">{rounder(row.TotalCostStd).toLocaleString()}</td>
+                    <td className="TotalCostIA" >{rounder(row.TotalCostIA).toLocaleString()} </td>
 
-                    <td className={row.DeltaIA >= 0 ? "DeltaIA_pos" : "DeltaIA_neg"} >{rounder(row.DeltaIA)} </td>
+                    <td className={row.DeltaIA >= 0 ? "DeltaIA_pos" : "DeltaIA_neg"} >{rounder(row.DeltaIA).toLocaleString()} </td>
 
                 </tr>
             })}
+
+
 
         </tbody>
     </table>);
@@ -256,7 +280,8 @@ function rounder(val) {
     let places = 2;
 
     if(Math.abs(val) < 0.01 ) {places = 3;}
-
-    return ( val.toFixed(places));
+    let ret = Number(val.toFixed(places)).toLocaleString();
+    ret = ret.slice(-2,-1) === '.' ? ret + '0' : ret;
+    return (ret);
 
 }

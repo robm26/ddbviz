@@ -1,0 +1,42 @@
+{
+    "Table": {
+        "AttributeDefinitions": [
+            {
+                "AttributeName": "PK",
+                "AttributeType": "S"
+            },
+            {
+                "AttributeName": "SK",
+                "AttributeType": "S"
+            }
+        ],
+        "TableName": "DemoTable03",
+        "KeySchema": [
+            {
+                "AttributeName": "PK",
+                "KeyType": "HASH"
+            },
+            {
+                "AttributeName": "SK",
+                "KeyType": "RANGE"
+            }
+        ],
+        "TableStatus": "ACTIVE",
+        "CreationDateTime": "2022-03-20T00:55:18.993000-04:00",
+        "ProvisionedThroughput": {
+            "NumberOfDecreasesToday": 0,
+            "ReadCapacityUnits": 5,
+            "WriteCapacityUnits": 5
+        },
+        "TableSizeBytes": 764286,
+        "ItemCount": 82,
+        "TableArn": "arn:aws:dynamodb:us-east-1:889485041841:table/DemoTable03",
+        "TableId": "927578d0-abb4-4fc4-9dc1-6b9cc6c1186d",
+        "StreamSpecification": {
+            "StreamEnabled": true,
+            "StreamViewType": "NEW_AND_OLD_IMAGES"
+        },
+        "LatestStreamLabel": "2022-03-20T04:55:18.993",
+        "LatestStreamArn": "arn:aws:dynamodb:us-east-1:889485041841:table/DemoTable03/stream/2022-03-20T04:55:18.993"
+    }
+}

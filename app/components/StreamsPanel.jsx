@@ -4,7 +4,8 @@ export function StreamsPanel(params) {
     const partitionCount = params?.shards?.activeShards?.length;
 
     return (<div className='shardPanel'>
-        <span className='shardCount'>{params?.shards?.activeShards?.length}</span> active stream shards.
+        <span className='shardCount'>{params?.shards?.activeShards?.length}</span>&nbsp;&nbsp;
+        <span className='shardUnits'>active stream shards.</span>
         With {partitionCount} physical storage partitions,
         this table has the potental to handle <b>{partitionCount} thousand write units per second</b>,
         or <b>{partitionCount * 6} thousand default read units per second</b>, or a mixture of both,

@@ -12,7 +12,7 @@ import {DynamoDBStreamsClient, DescribeStreamCommand} from "@aws-sdk/client-dyna
 
 import { CloudWatchClient, GetMetricDataCommand } from "@aws-sdk/client-cloudwatch";
 
-import { PricingClient, DescribeServicesCommand, GetProductsCommand } from "@aws-sdk/client-pricing";
+import { PricingClient, GetAttributeValuesCommand, GetProductsCommand } from "@aws-sdk/client-pricing";
 
 // import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 
@@ -227,27 +227,62 @@ export async function handler(event) {
         if(ActionName === 'pricing') {
             const client = new PricingClient({ region: 'us-east-1' });
 
-            const params = {
+            const paramsProduct = {
                 ServiceCode: 'AmazonDynamoDB',
                 Filters: [
                     {'Type': 'TERM_MATCH',
                      'Field': 'servicecode',
                      'Value': 'AmazonDynamoDB'},
 
-                    {'Type': 'TERM_MATCH',
-                    'Field': 'regionCode',
-                    'Value': Region}
+                    // {'Type': 'TERM_MATCH',
+                    // 'Field': 'regionCode',
+                    // 'Value': Region}
                 ],
                 FormatVersion: 'aws_v1',
+
                 MaxResults: 100
             };
 
-            const command = new GetProductsCommand(params);
-            let priceResults = await client.send(command);
+            // const paramsAttributes = {
+            //     AttributeName: "usagetype",
+            //     MaxResults: 100,
+            //     ServiceCode: "AmazonDynamoDB"
+            // };
+
+            // const acommand = new GetAttributeValuesCommand(paramsAttributes);
+            // let attrResults = await client.send(acommand);
+
+            // console.log(' === attrResults');
+            // console.log(JSON.stringify(attrResults['AttributeValues'], null, 2));
+            let NextToken = 'next';
+
+            let allPrices = [];
+            let counter = 0;
+
+            let priceResults;
+
+            while(NextToken.length > 0) {
+                counter += 1;
+                const pcommand = new GetProductsCommand(paramsProduct);
+                priceResults = await client.send(pcommand);
+                allPrices = [].concat(allPrices, priceResults?.PriceList);
+                // console.log('price list length: ' + allPrices.length);
+
+                if(priceResults?.NextToken) {
+                    // console.log('NextToken: ' + priceResults.NextToken);
+                    NextToken = priceResults?.NextToken;
+                    paramsProduct['NextToken'] = NextToken;
+
+                } else {
+                    NextToken = '';
+                }
+            }
+
 
             const priceBook = {};
 
-            priceResults.PriceList.map((offerTxt, index)=> {
+
+            allPrices.map((offerTxt, index)=> {
 
                 let offer = JSON.parse(offerTxt);
                 let families = [
@@ -262,11 +297,25 @@ export async function handler(event) {
                     let priceDimensions = offer?.terms?.OnDemand[Object.keys(offer?.terms?.OnDemand)[0]].priceDimensions;
                     let price;
 
+                    function isNumeric(n) {
+                        return !isNaN(parseFloat(n)) && isFinite(n);
+                    }
+
                     Object.keys(priceDimensions).map((dim)=>{
-                        if(dim?.pricePerUnit?.USD !== 0.0000000000) {
+                        // if(offer.product.attributes.regionCode === 'us-west-2'
+                        // && offer.product.attributes.group === 'DDB-ReadUnits'
+                        // && offer.product.attributes.usagetype === 'USW2-ReadCapacityUnit-Hrs') {
+                        //     // console.log(offer.product.attributes.usagetype + ' ' + JSON.stringify(offer.terms.OnDemand, null, 2));
+                        //     //console.log('--- pd')
+                        //     //console.log(isNumeric(priceDimensions[dim].endRange));
+                        //
+                        // }
+
+                        if(!isNumeric(priceDimensions[dim].endRange)) {
                             price = priceDimensions[dim]['pricePerUnit']['USD'];
                         }
                     });
+
                     priceBook[offer.product?.attributes?.usagetype] = price;
                 }
             });

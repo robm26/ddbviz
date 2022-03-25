@@ -4,6 +4,8 @@ import {Menu}     from "~/components/menu";
 import {StatsPanel}     from "~/components/StatsPanel";
 import {handler} from "~/lambda/src";
 
+import * as fs from 'fs';
+
 export const action = async ({ request }) => {
     return null;
 };
@@ -20,7 +22,29 @@ export const loader = async ({ params, request }) => {
         tableName = tableName.substring(0, caretPosition);
     }
 
-    const metadata = await handler({'Region': params.region, 'ActionName': 'describe', 'TableName': tableName});
+    //const metadata = await handler({'Region': params.region, 'ActionName': 'describe', 'TableName': tableName});
+
+    let metadata;
+
+    if(params.region === 'demo') {
+        const fileContents = fs.readFileSync(
+            './app/samples/' + tableName + '.json',
+            {encoding: 'utf-8'},
+        );
+        metadata = JSON.parse(fileContents);
+
+
+    } else {
+        const requestBody = {
+            'Region': params.region,
+            'ActionName': 'describe',
+            'TableName': tableName
+        };
+
+        metadata = await handler(requestBody);
+    }
+
+
 
     let stats = [];
 
@@ -34,9 +58,6 @@ export const loader = async ({ params, request }) => {
             StartDate: before.toISOString(),
             EndDate:   now.toISOString()
         });
-
-        //console.log(items.Items.length);
-
 
 
     return {

@@ -3,8 +3,9 @@ import {
     redirect
 } from "remix";
 
+import * as fs from 'fs';
+
 import { Menu }     from "~/components/menu";
-// import { TableSummary } from "../components/TableSummary";
 
 import { handler } from "../lambda/src/index";
 
@@ -16,13 +17,25 @@ export const loader = async ({ params }) => {
         tableName = tableName.substring(0, caretPosition);
     }
 
-    const requestBody = {
-        'Region': params.region,
-        'ActionName': 'describe',
-        'TableName': tableName
-    };
+    let metadata;
 
-    const metadata = await handler(requestBody);
+    if(params.region === 'demo') {
+        const fileContents = fs.readFileSync(
+            './app/samples/' + tableName + '.json',
+            {encoding: 'utf-8'},
+        );
+        metadata = JSON.parse(fileContents);
+
+
+    } else {
+        const requestBody = {
+            'Region': params.region,
+            'ActionName': 'describe',
+            'TableName': tableName
+        };
+
+        metadata = await handler(requestBody);
+    }
 
     return {
         params:params,
@@ -30,13 +43,9 @@ export const loader = async ({ params }) => {
     };
 };
 
-
 export const action = async ({request}) => {
-
     const body = await request.formData();
-    console.log('action body\n' + JSON.stringify(body));
     return null;
-
 };
 
 export default function TableDetails() {
