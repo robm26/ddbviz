@@ -48,8 +48,8 @@
             "ReadCapacityUnits": 0,
             "WriteCapacityUnits": 0
         },
-        "TableSizeBytes": 575510479,
-        "ItemCount": 14001,
+        "TableSizeBytes": 5753510479,
+        "ItemCount": 143001,
         "TableArn": "arn:aws:dynamodb:us-east-1:889485041841:table/DemoTable07",
         "TableId": "9f083b98-5259-49c9-b38a-d70cb75448ab",
         "BillingModeSummary": {
@@ -83,8 +83,8 @@
                     "ReadCapacityUnits": 0,
                     "WriteCapacityUnits": 0
                 },
-                "IndexSizeBytes": 779788,
-                "ItemCount": 9810,
+                "IndexSizeBytes": 7793788,
+                "ItemCount": 98130,
                 "IndexArn": "arn:aws:dynamodb:us-east-1:889485041841:table/DemoTable07/index/GSI2"
             },
             {
@@ -108,8 +108,8 @@
                     "ReadCapacityUnits": 0,
                     "WriteCapacityUnits": 0
                 },
-                "IndexSizeBytes": 383556117,
-                "ItemCount": 9339,
+                "IndexSizeBytes": 3833556117,
+                "ItemCount": 933339,
                 "IndexArn": "arn:aws:dynamodb:us-east-1:889485041841:table/DemoTable07/index/GSI1"
             },
             {

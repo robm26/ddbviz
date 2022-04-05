@@ -31,9 +31,12 @@ export function TableGrid(props) {
     if(data.region.substring(0,9) === 'localhost') {region = 'us-east-1';} else {region = data.region;}
 
     let priceRegion = region === 'us-east-1' ? '' : (region.slice(0,2) + region.slice(3,4) + region.split('-')[2] + '-').toUpperCase();
+    priceRegion = region === 'eu-west-1' ? 'EU' : priceRegion;
+
     if(data.region === 'demo') {
         priceRegion = '';
     }
+
 
     const [sortAttr, setSortAttr] = React.useState('SizeMB');
     const [sortDirection, setSortDirection] = React.useState('1');
@@ -115,21 +118,27 @@ export function TableGrid(props) {
         let WriteCostStd = ProvisionedWCU * pricer[priceRegion + 'WriteCapacityUnit-Hrs'] * 24 * 30;
         let WriteCostIA = ProvisionedWCU * pricer[priceRegion + 'IA-WriteCapacityUnit-Hrs'] * 24 * 30;
 
-        let TotalCostStd = StorageCostStd + ReadCostStd + WriteCostStd;
-        let TotalCostIA = StorageCostIA + ReadCostIA + WriteCostIA;
-        let DeltaIA = TotalCostIA - TotalCostStd;
+        let TotalCostStd = 0;
+        let TotalCostIA = 0;
+        let DeltaIA = 0;
 
+        if(CapacityMode === 'PROVISIONED') {
+            TotalCostStd = StorageCostStd + ReadCostStd + WriteCostStd;
+            TotalCostIA = StorageCostIA + ReadCostIA + WriteCostIA;
+            DeltaIA = TotalCostIA - TotalCostStd;
+        }
 
         const gtSize = table?.Replicas?.length + 1 || 1;
-        // console.log(gtSize);
-        const ItemCount = table.ItemCount * gtSize;
+        let ItemCount = table.ItemCount;
 
-        StorageCostStd *= gtSize;
-        StorageCostIA *= gtSize;
-        WriteCostStd *= gtSize;
-        WriteCostIA *= gtSize;
-        SizeMB *= gtSize;
-        TotalSizeMB *= gtSize;
+        // Global Table multiplier
+        // ItemCount *= gtSize;
+        // StorageCostStd *= gtSize;
+        // StorageCostIA *= gtSize;
+        // WriteCostStd *= gtSize;
+        // WriteCostIA *= gtSize;
+        // SizeMB *= gtSize;
+        // TotalSizeMB *= gtSize;
 
 
 
@@ -226,7 +235,7 @@ export function TableGrid(props) {
 
 
 
-                    return (<span title={'Global Table Replica in ' + replica.RegionName} key={index}>
+                    return (<span title={'Global Table Replica in ' + replica.RegionName + ', click to view its size and cost'} key={index}>
                         <Link key={index} className='replicas'
                               to={'/' + replica.RegionName + '/' + row.TableName + '/stats'}  >
                             {repIcon}

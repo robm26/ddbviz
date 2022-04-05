@@ -96,8 +96,8 @@ export default function TableStatsAction(params) {
     return (<div>
         <Menu region={data.params.region} table={data.params.table}  gsi={gsi} setGsi={setGsi} />
 
-        {payload}
-        {streamsLink}
+        {data.params.region === 'demo' ? null : payload}
+        {data.params.region === 'demo' ? null : streamsLink}
 
     </div>);
 

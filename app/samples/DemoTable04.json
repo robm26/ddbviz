@@ -10,7 +10,7 @@
                 "AttributeType": "S"
             }
         ],
-        "TableName": "DemoTable03",
+        "TableName": "DemoTable04",
         "KeySchema": [
             {
                 "AttributeName": "PK",
@@ -25,8 +25,12 @@
         "CreationDateTime": "2022-03-20T00:55:18.993000-04:00",
         "ProvisionedThroughput": {
             "NumberOfDecreasesToday": 0,
-            "ReadCapacityUnits": 5,
-            "WriteCapacityUnits": 5
+            "ReadCapacityUnits": 0,
+            "WriteCapacityUnits": 0
+        },
+        "BillingModeSummary": {
+            "BillingMode": "PAY_PER_REQUEST",
+            "LastUpdateToPayPerRequestDateTime": "2022-03-17T23:00:48.366000-04:00"
         },
         "TableSizeBytes": 7645228605,
         "ItemCount": 852232,

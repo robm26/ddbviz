@@ -7,8 +7,8 @@ export const config = () => {
     "displayBytesMax" : 25,
 
       "gridFormatting":{
-          "valueBig" : 4000,
-          "valueHuge" : 100000
+          "valueBig" : 2000,
+          "valueHuge" : 5000
       },
 
     "regions": [

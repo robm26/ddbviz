@@ -1,11 +1,11 @@
 import {
-    Link, NavLink,
+    Link,
+    Form,
     useLoaderData,
-    useTransition, Form, redirect
+    useTransition
 } from "remix";
 
 import {config} from "~/configuration";
-
 
 export function Menu(params) {
     const data = useLoaderData();
@@ -15,7 +15,6 @@ export function Menu(params) {
     const gsi = params?.gsi;  // gsi preview
     const setGsi = params?.setGsi;
 
-
     const [pk1, setPk1] = React.useState(params?.pk);  // query textbox sets, query button reads
     const [sk1, setSk1] = React.useState(params?.sk);
     const [getmode, setGetmode] = React.useState('get');
@@ -23,7 +22,6 @@ export function Menu(params) {
     if(data?.error) {
         return null;
     }
-
 
     const handleQuerybox = (val) => {
         setPk1(val.target.value);
@@ -52,7 +50,6 @@ export function Menu(params) {
 
     let regionList = config().regions;
 
-
     if(data && data?.region ) {
         regionList = [data.region] ;
     }
@@ -63,6 +60,7 @@ export function Menu(params) {
 
     let tableTitle;
     let readForm;
+    let sql;
 
     if(params?.table) {
 
@@ -82,7 +80,7 @@ export function Menu(params) {
                 const repIcon = ['us','ca','sa'].includes(repContinent)
                     ? '🌎' : ['eu','af','me'].includes(repContinent) ? '🌍' : '🌏';
 
-                return (<span title={'Global Table Replica in ' + replica.RegionName} key={index}>
+                return (<span title={'Global Table Replica in ' + replica.RegionName + ', click to view its size and cost'} key={index}>
                         <Link key={index} className='replicas'
                               to={'/' + replica.RegionName + '/' + params.table + '/stats'}  >
                             {repIcon}
@@ -295,9 +293,8 @@ export function Menu(params) {
         regionLabel = null;
     }
 
-    const prices = {'DynamoDB-Storage': '0.25'};
-    const pricing = (<li>{JSON.stringify(prices?.children)}</li>);
-    // {"name":["luna","wally"]};
+
+
 
     return (
         <div className="menuContainer">
@@ -326,9 +323,11 @@ export function Menu(params) {
                 })}
 
                 <li>{tableTitle}</li>
-                <li>{readForm}</li>
-                <li>{transitionDisplay()}</li>
-                {pricing}
+                <li>{params?.region === 'demo' ? null : readForm}</li>
+                <li>{params?.pageTitle === 'SQL' ? 'SQL' : null}</li>
+                {params?.sqlConn ? (<li className='mysqlInfo'>database: {params.sqlConn?.database}<br/>hostname: {params.sqlConn?.host}</li>)  : null}
+                <li className='transition'>{transitionDisplay()}</li>
+
             </ul>
 
         </div>

@@ -10,9 +10,7 @@
     background-color:lightgrey;
     padding:7px;
     border-radius:5px;
-
 }
-
 
 .menuContainer ul {
     list-style-type: none;
@@ -124,7 +122,7 @@ a {
 }
 
 .readFormTable td {
-
+    background-color: gainsboro;
 }
 
 .tableTitle .selected {
@@ -273,9 +271,55 @@ button:hover {
     color:gray;
     padding:5px;
 }
+
+
+.sqlContainer {
+    background-color:whitesmoke;
+    padding:5px;
+}
+
+
+.transition {
+    animation: rotation 4s infinite linear;
+}
+
 .errorPanel {
     background-color: LavenderBlush;
     margin:10px;
     padding:10px;
     border-radius:5px;
+}
+
+.sqlTableForm td {
+    border-radius:5px;
+    border:none;
+}
+
+.sqlTableForm textarea {
+    background-color:gainsboro;
+    height:100px;
+    width:500px;
+    font-size:larger;
+    padding:10px;
+    border:none;
+    margin:2px;
+}
+.sqlTableForm textarea:focus, input:focus {
+    outline:none;
+    background-color:whitesmoke;
+}
+
+.sqlTableForm button {
+    border-radius:6px;
+    border:1px solid silver;
+    padding:3px;
+}
+.mysqlInfo {
+    font-size:x-small;
+    color:dimgray;
+}
+
+@keyframes rotation {
+    from {transform: rotate(0deg);}
+    to {transform: rotate(359deg);}
 }

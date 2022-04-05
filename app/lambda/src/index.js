@@ -1,5 +1,4 @@
 import {
-    DynamoDB,
     DynamoDBClient,
     ListTablesCommand,
     DescribeTableCommand,
@@ -7,14 +6,15 @@ import {
     QueryCommand,
     GetItemCommand
 } from "@aws-sdk/client-dynamodb";
+// import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 
 import {DynamoDBStreamsClient, DescribeStreamCommand} from "@aws-sdk/client-dynamodb-streams";
 
 import { CloudWatchClient, GetMetricDataCommand } from "@aws-sdk/client-cloudwatch";
 
-import { PricingClient, GetAttributeValuesCommand, GetProductsCommand } from "@aws-sdk/client-pricing";
+import { PricingClient, GetProductsCommand } from "@aws-sdk/client-pricing";
 
-// import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
+import { RDSDataClient, ExecuteStatementCommand } from "@aws-sdk/client-rds-data";
 
 
 export async function handler(event) {
@@ -39,9 +39,9 @@ export async function handler(event) {
     if(!ScanLimit) {
         ScanLimit = 100;
     }
-    let ScanForward = true;
+    //let ScanForward = true;
 
-    const ReturnFormat = event?.ReturnFormat || 'data';
+    // const ReturnFormat = event?.ReturnFormat || 'data';
 
     const PkType = typeof PkValue === 'string' ? 'S' : 'N';
     let SkType;
@@ -75,6 +75,10 @@ export async function handler(event) {
         //     secretAccessKey: "yyy",
         // }
     });
+
+
+    // a client can be shared by different commands.
+    const rdsDataClient = new RDSDataClient({ region: Region });
 
 
     try {
@@ -243,17 +247,7 @@ export async function handler(event) {
                 MaxResults: 100
             };
 
-            // const paramsAttributes = {
-            //     AttributeName: "usagetype",
-            //     MaxResults: 100,
-            //     ServiceCode: "AmazonDynamoDB"
-            // };
 
-            // const acommand = new GetAttributeValuesCommand(paramsAttributes);
-            // let attrResults = await client.send(acommand);
-
-            // console.log(' === attrResults');
-            // console.log(JSON.stringify(attrResults['AttributeValues'], null, 2));
             let NextToken = 'next';
 
             let allPrices = [];
@@ -302,14 +296,6 @@ export async function handler(event) {
                     }
 
                     Object.keys(priceDimensions).map((dim)=>{
-                        // if(offer.product.attributes.regionCode === 'us-west-2'
-                        // && offer.product.attributes.group === 'DDB-ReadUnits'
-                        // && offer.product.attributes.usagetype === 'USW2-ReadCapacityUnit-Hrs') {
-                        //     // console.log(offer.product.attributes.usagetype + ' ' + JSON.stringify(offer.terms.OnDemand, null, 2));
-                        //     //console.log('--- pd')
-                        //     //console.log(isNumeric(priceDimensions[dim].endRange));
-                        //
-                        // }
 
                         if(!isNumeric(priceDimensions[dim].endRange)) {
                             price = priceDimensions[dim]['pricePerUnit']['USD'];
@@ -373,6 +359,44 @@ export async function handler(event) {
             }
 
             results = {'activeShards': activeShards};
+
+        }
+
+        if(ActionName === 'sql') {
+            // const query = event?.Query;
+            // const host = event?.host;
+            // const user = event?.user;
+            // const password = event?.password;
+            // const database = event?.database;
+
+            // const conn = mysql.createConnection({
+            //     host: host,
+            //     user: user,
+            //     password: password,
+            //     database: database
+            // });
+
+            const rdsParams = {
+                secretArn: '[SecretARN]',
+                resourceArn: 'arn:aws:rds:us-east-1:589662381973:db:rmeg2skpwcsqx',
+                sql: 'SHOW TABLES;',
+                database: 'information_schema',
+                includeResultMetadata: true
+            };
+
+            const rdsCommand = new ExecuteStatementCommand(params);
+
+            try {
+                const data = await rdsDataClient.send(rdsCommand);
+            } catch (error) {
+
+            } finally {
+
+            }
+
+            results = data;
+
+            // results = await client.send(new ScanCommand(params));
 
         }
 

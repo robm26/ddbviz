@@ -9,6 +9,7 @@
     "@aws-sdk/client-dynamodb-streams": "^3.54.1",
     "@aws-sdk/client-lambda": "^3.51.0",
     "@aws-sdk/client-pricing": "^3.54.1",
-    "@aws-sdk/util-dynamodb": "^3.51.0"
+    "@aws-sdk/util-dynamodb": "^3.51.0",
+    "mysql": "^2.18.1"
   }
 }
