@@ -45,9 +45,6 @@ export const loader = async ({ params, request }) => {
         sf = false;
     }
 
-    console.log(limit ? 'lim':'nolim');
-
-
     let event = {
         Region:params.region,
         TableName:tableName,
@@ -57,6 +54,7 @@ export const loader = async ({ params, request }) => {
         PkValue: params.pk,
         SkName: SkName,
         SkValue: params.sk,
+        SkValueType: SkType,
         ScanCount: 1,
         ScanLimit: parseInt(limit) || 99999999,
         ScanForward: sf,

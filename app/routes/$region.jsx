@@ -24,9 +24,15 @@ export const loader = async ({ params, request }) => {
     let tables;
 
     if(params.region === 'demo') {
-        const dirContents = fs.readdirSync('./app/samples');
+        const dirContents = fs.readdirSync('./app/demos');
+
+        const indexStats = dirContents.indexOf('stats');
+        if (indexStats !== -1) {
+            dirContents.splice(indexStats, 1);
+        }
 
         tables = {TableNames:dirContents.map((item) => {
+
             return item.replace('.json','');
         })};
 
@@ -45,7 +51,7 @@ export const loader = async ({ params, request }) => {
 
             if(params.region === 'demo') {
                 const fileContents = fs.readFileSync(
-                    './app/samples/' + table + '.json',
+                    './app/demos/' + table + '.json',
                     {encoding: 'utf-8'},
                 );
                 tableMetadatas.push(JSON.parse(fileContents).Table);

@@ -28,11 +28,11 @@ export const loader = async ({ params, request }) => {
 
     if(params.region === 'demo') {
         const fileContents = fs.readFileSync(
-            './app/samples/' + tableName + '.json',
+            './app/demos/' + tableName + '.json',
             {encoding: 'utf-8'},
         );
-        metadata = JSON.parse(fileContents);
 
+        metadata = JSON.parse(fileContents);
 
     } else {
         const requestBody = {
@@ -45,12 +45,20 @@ export const loader = async ({ params, request }) => {
     }
 
 
-
     let stats = [];
 
     const now = new Date();
     const before = new Date(now.getTime() - (minutesBack*60000));
 
+    if(params.region === 'demo') {
+
+        const fileContents = fs.readFileSync(
+            './app/demos/stats/' + tableName + '.json',
+            {encoding: 'utf-8'},
+        );
+        stats = JSON.parse(fileContents);
+
+    } else {
         stats = await handler({
             Region:params.region,
             TableName:tableName,
@@ -58,6 +66,9 @@ export const loader = async ({ params, request }) => {
             StartDate: before.toISOString(),
             EndDate:   now.toISOString()
         });
+        console.log('statsssse');
+        // console.log(JSON.stringify(stats, null, 2));
+    }
 
 
     return {
@@ -96,8 +107,11 @@ export default function TableStatsAction(params) {
     return (<div>
         <Menu region={data.params.region} table={data.params.table}  gsi={gsi} setGsi={setGsi} />
 
-        {data.params.region === 'demo' ? null : payload}
-        {data.params.region === 'demo' ? null : streamsLink}
+        {payload}
+        {streamsLink}
+
+        {/*{data.params.region === 'demo' ? null : payload}*/}
+        {/*{data.params.region === 'demo' ? null : streamsLink}*/}
 
     </div>);
 

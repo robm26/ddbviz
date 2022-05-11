@@ -1,0 +1,486 @@
+{
+  product: {
+    productFamily: 'Amazon DynamoDB Export Data Size',
+    attributes: {
+      volumeType: 'Amazon DynamoDB - Export Size',
+      regionCode: 'us-east-1',
+      servicecode: 'AmazonDynamoDB',
+      usagetype: 'USE1-ExportDataSize-Bytes',
+      locationType: 'AWS Region',
+      location: 'US East (N. Virginia)',
+      servicename: 'Amazon DynamoDB',
+      operation: ''
+    },
+    sku: '3ADXMU9RYGKRUA9W'
+  },
+  serviceCode: 'AmazonDynamoDB',
+  terms: { OnDemand: { '3ADXMU9RYGKRUA9W.JRTCKXETXF': [Object] } },
+  version: '20220215164030',
+  publicationDate: '2022-02-15T16:40:30Z'
+},
+
+{
+  product: {
+    productFamily: 'Amazon DynamoDB PayPerRequest Throughput',
+    attributes: {
+      regionCode: 'us-east-1',
+      servicecode: 'AmazonDynamoDB',
+      groupDescription: 'DynamoDB PayPerRequest Replicated Write Request Units',
+      usagetype: 'ReplWriteRequestUnits',
+      locationType: 'AWS Region',
+      location: 'US East (N. Virginia)',
+      servicename: 'Amazon DynamoDB',
+      operation: 'PayPerRequestThroughput',
+      group: 'DDB-ReplicatedWriteUnits'
+    },
+    sku: '3XWM5KJM296GT93W'
+  },
+  serviceCode: 'AmazonDynamoDB',
+  terms: { OnDemand: { '3XWM5KJM296GT93W.JRTCKXETXF': [Object] } },
+  version: '20220215164030',
+  publicationDate: '2022-02-15T16:40:30Z'
+}
+,
+
+{
+  product: {
+    productFamily: 'Provisioned IOPS',
+    attributes: {
+      regionCode: 'us-east-1',
+      servicecode: 'AmazonDynamoDB',
+      groupDescription: 'DynamoDB Provisioned Write Units IA',
+      usagetype: 'IA-WriteCapacityUnit-Hrs',
+      locationType: 'AWS Region',
+      location: 'US East (N. Virginia)',
+      servicename: 'Amazon DynamoDB',
+      operation: 'CommittedThroughput',
+      group: 'DDB-WriteUnitsIA'
+    },
+    sku: '4PEFGG9BW5Z8Z57U'
+  },
+  serviceCode: 'AmazonDynamoDB',
+  terms: { OnDemand: { '4PEFGG9BW5Z8Z57U.JRTCKXETXF': [Object] } },
+  version: '20220215164030',
+  publicationDate: '2022-02-15T16:40:30Z'
+}
+,
+
+{
+  product: {
+    productFamily: 'Provisioned IOPS',
+    attributes: {
+      regionCode: 'us-east-1',
+      servicecode: 'AmazonDynamoDB',
+      groupDescription: 'DynamoDB Provisioned Read Units',
+      usagetype: 'ReadCapacityUnit-Hrs',
+      locationType: 'AWS Region',
+      location: 'US East (N. Virginia)',
+      servicename: 'Amazon DynamoDB',
+      operation: 'CommittedThroughput',
+      group: 'DDB-ReadUnits'
+    },
+    sku: '4V475Q49DCKGXQZ2'
+  },
+  serviceCode: 'AmazonDynamoDB',
+  terms: {
+    OnDemand: { '4V475Q49DCKGXQZ2.JRTCKXETXF': [Object] },
+    Reserved: {
+      '4V475Q49DCKGXQZ2.YTVHEVGPBZ': [Object],
+      '4V475Q49DCKGXQZ2.VG8YD49WWM': [Object]
+    }
+  },
+  version: '20220215164030',
+  publicationDate: '2022-02-15T16:40:30Z'
+}
+,
+
+{
+  product: {
+    productFamily: 'Amazon DynamoDB PayPerRequest Throughput',
+    attributes: {
+      regionCode: 'us-east-1',
+      servicecode: 'AmazonDynamoDB',
+      groupDescription: 'DynamoDB PayPerRequest Read Request Units',
+      usagetype: 'ReadRequestUnits',
+      locationType: 'AWS Region',
+      location: 'US East (N. Virginia)',
+      servicename: 'Amazon DynamoDB',
+      operation: 'PayPerRequestThroughput',
+      group: 'DDB-ReadUnits'
+    },
+    sku: '4W4ZMC46EHE8XTTZ'
+  },
+  serviceCode: 'AmazonDynamoDB',
+  terms: { OnDemand: { '4W4ZMC46EHE8XTTZ.JRTCKXETXF': [Object] } },
+  version: '20220215164030',
+  publicationDate: '2022-02-15T16:40:30Z'
+}
+,
+
+{
+  product: {
+    productFamily: 'Amazon DynamoDB PayPerRequest Throughput',
+    attributes: {
+      regionCode: 'us-east-1',
+      servicecode: 'AmazonDynamoDB',
+      groupDescription: 'DynamoDB PayPerRequest Replicated Write Request Units IA',
+      usagetype: 'IA-ReplWriteRequestUnits',
+      locationType: 'AWS Region',
+      location: 'US East (N. Virginia)',
+      servicename: 'Amazon DynamoDB',
+      operation: 'PayPerRequestThroughput',
+      group: 'DDB-ReplicatedWriteUnitsIA'
+    },
+    sku: '6NJM3K66JDV3SGNV'
+  },
+  serviceCode: 'AmazonDynamoDB',
+  terms: { OnDemand: { '6NJM3K66JDV3SGNV.JRTCKXETXF': [Object] } },
+  version: '20220215164030',
+  publicationDate: '2022-02-15T16:40:30Z'
+}
+,
+
+{
+  product: {
+    attributes: {
+      regionCode: 'us-east-1',
+      servicecode: 'AmazonDynamoDB',
+      groupDescription: 'Change Data Capture Units for AWS Glue Elastic Views',
+      usagetype: 'USE1-ChangeDataCaptureUnits-ElasticViews',
+      locationType: 'AWS Region',
+      location: 'US East (N. Virginia)',
+      servicename: 'Amazon DynamoDB',
+      operation: 'DelegatedOperations',
+      group: 'DDB-ElasticViews'
+    },
+    sku: '9HGBWJU6RANR5U7Y'
+  },
+  serviceCode: 'AmazonDynamoDB',
+  terms: { OnDemand: { '9HGBWJU6RANR5U7Y.JRTCKXETXF': [Object] } },
+  version: '20220215164030',
+  publicationDate: '2022-02-15T16:40:30Z'
+}
+,
+
+{
+  product: {
+    attributes: {
+      regionCode: 'us-east-1',
+      servicecode: 'AmazonDynamoDB',
+      groupDescription: 'Change Data Capture Units for Kinesis Data Streams',
+      usagetype: 'USE1-ChangeDataCaptureUnits-Kinesis',
+      locationType: 'AWS Region',
+      location: 'US East (N. Virginia)',
+      servicename: 'Amazon DynamoDB',
+      operation: 'DelegatedOperations',
+      group: 'DDB-Kinesis'
+    },
+    sku: 'AKFBEQDKQJE2TU7K'
+  },
+  serviceCode: 'AmazonDynamoDB',
+  terms: { OnDemand: { 'AKFBEQDKQJE2TU7K.JRTCKXETXF': [Object] } },
+  version: '20220215164030',
+  publicationDate: '2022-02-15T16:40:30Z'
+}
+,
+
+{
+  product: {
+    productFamily: 'API Request',
+    attributes: {
+      regionCode: 'us-east-1',
+      servicecode: 'AmazonDynamoDB',
+      groupDescription: 'DynamoDB Streams read request (GetRecords API)',
+      usagetype: 'USE1-Streams-Requests',
+      locationType: 'AWS Region',
+      location: 'US East (N. Virginia)',
+      servicename: 'Amazon DynamoDB',
+      operation: 'GetRecords',
+      group: 'DDB-StreamsReadRequests'
+    },
+    sku: 'C7EPEWE3GFXXDMHR'
+  },
+  serviceCode: 'AmazonDynamoDB',
+  terms: { OnDemand: { 'C7EPEWE3GFXXDMHR.JRTCKXETXF': [Object] } },
+  version: '20220215164030',
+  publicationDate: '2022-02-15T16:40:30Z'
+}
+,
+
+{
+  product: {
+    productFamily: 'Database Storage',
+    attributes: {
+      volumeType: 'Amazon DynamoDB - Indexed DataStore - IA',
+      regionCode: 'us-east-1',
+      servicecode: 'AmazonDynamoDB',
+      usagetype: 'IA-TimedStorage-ByteHrs',
+      locationType: 'AWS Region',
+      location: 'US East (N. Virginia)',
+      servicename: 'Amazon DynamoDB',
+      operation: ''
+    },
+    sku: 'DUA7FNC8NKEMZ7AA'
+  },
+  serviceCode: 'AmazonDynamoDB',
+  terms: { OnDemand: { 'DUA7FNC8NKEMZ7AA.JRTCKXETXF': [Object] } },
+  version: '20220215164030',
+  publicationDate: '2022-02-15T16:40:30Z'
+}
+,
+
+{
+  product: {
+    productFamily: 'Amazon DynamoDB On-Demand Backup Storage',
+    attributes: {
+      volumeType: 'Amazon DynamoDB - On-Demand Backup Storage',
+      regionCode: 'us-east-1',
+      servicecode: 'AmazonDynamoDB',
+      usagetype: 'USE1-TimedBackupStorage-ByteHrs',
+      locationType: 'AWS Region',
+      location: 'US East (N. Virginia)',
+      servicename: 'Amazon DynamoDB',
+      operation: ''
+    },
+    sku: 'EDC5UVDZNFN2S777'
+  },
+  serviceCode: 'AmazonDynamoDB',
+  terms: { OnDemand: { 'EDC5UVDZNFN2S777.JRTCKXETXF': [Object] } },
+  version: '20220215164030',
+  publicationDate: '2022-02-15T16:40:30Z'
+}
+,
+
+{
+  product: {
+    productFamily: 'Database Storage',
+    attributes: {
+      volumeType: 'Amazon DynamoDB - Indexed DataStore',
+      regionCode: 'us-east-1',
+      servicecode: 'AmazonDynamoDB',
+      usagetype: 'TimedStorage-ByteHrs',
+      locationType: 'AWS Region',
+      location: 'US East (N. Virginia)',
+      servicename: 'Amazon DynamoDB',
+      operation: ''
+    },
+    sku: 'F3E2EDSYC6ZNW7XP'
+  },
+  serviceCode: 'AmazonDynamoDB',
+  terms: { OnDemand: { 'F3E2EDSYC6ZNW7XP.JRTCKXETXF': [Object] } },
+  version: '20220215164030',
+  publicationDate: '2022-02-15T16:40:30Z'
+}
+,
+
+{
+  product: {
+    productFamily: 'Amazon DynamoDB PayPerRequest Throughput',
+    attributes: {
+      regionCode: 'us-east-1',
+      servicecode: 'AmazonDynamoDB',
+      groupDescription: 'DynamoDB PayPerRequest Write Request Units',
+      usagetype: 'WriteRequestUnits',
+      locationType: 'AWS Region',
+      location: 'US East (N. Virginia)',
+      servicename: 'Amazon DynamoDB',
+      operation: 'PayPerRequestThroughput',
+      group: 'DDB-WriteUnits'
+    },
+    sku: 'FGXVD96DKJMUASY3'
+  },
+  serviceCode: 'AmazonDynamoDB',
+  terms: { OnDemand: { 'FGXVD96DKJMUASY3.JRTCKXETXF': [Object] } },
+  version: '20220215164030',
+  publicationDate: '2022-02-15T16:40:30Z'
+}
+,
+
+{
+  product: {
+    productFamily: 'Amazon DynamoDB PayPerRequest Throughput',
+    attributes: {
+      regionCode: 'us-east-1',
+      servicecode: 'AmazonDynamoDB',
+      groupDescription: 'DynamoDB PayPerRequest Write Request Units IA',
+      usagetype: 'IA-WriteRequestUnits',
+      locationType: 'AWS Region',
+      location: 'US East (N. Virginia)',
+      servicename: 'Amazon DynamoDB',
+      operation: 'PayPerRequestThroughput',
+      group: 'DDB-WriteUnitsIA'
+    },
+    sku: 'MJVXP493BSJ5SKSQ'
+  },
+  serviceCode: 'AmazonDynamoDB',
+  terms: { OnDemand: { 'MJVXP493BSJ5SKSQ.JRTCKXETXF': [Object] } },
+  version: '20220215164030',
+  publicationDate: '2022-02-15T16:40:30Z'
+}
+,
+
+{
+  product: {
+    productFamily: 'DDB-Operation-ReplicatedWrite',
+    attributes: {
+      regionCode: 'us-east-1',
+      servicecode: 'AmazonDynamoDB',
+      groupDescription: 'DynamoDB Provisioned Replicated Write Units IA',
+      usagetype: 'IA-ReplWriteCapacityUnit-Hrs',
+      locationType: 'AWS Region',
+      location: 'US East (N. Virginia)',
+      servicename: 'Amazon DynamoDB',
+      operation: 'CommittedThroughput',
+      group: 'DDB-ReplicatedWriteUnitsIA'
+    },
+    sku: 'MNQBR5JKF47TW9TE'
+  },
+  serviceCode: 'AmazonDynamoDB',
+  terms: { OnDemand: { 'MNQBR5JKF47TW9TE.JRTCKXETXF': [Object] } },
+  version: '20220215164030',
+  publicationDate: '2022-02-15T16:40:30Z'
+}
+,
+
+{
+  product: {
+    productFamily: 'Provisioned IOPS',
+    attributes: {
+      regionCode: 'us-east-1',
+      servicecode: 'AmazonDynamoDB',
+      groupDescription: 'DynamoDB Provisioned Read Units IA',
+      usagetype: 'IA-ReadCapacityUnit-Hrs',
+      locationType: 'AWS Region',
+      location: 'US East (N. Virginia)',
+      servicename: 'Amazon DynamoDB',
+      operation: 'CommittedThroughput',
+      group: 'DDB-ReadUnitsIA'
+    },
+    sku: 'P7CSCRKZN8P5MR8C'
+  },
+  serviceCode: 'AmazonDynamoDB',
+  terms: { OnDemand: { 'P7CSCRKZN8P5MR8C.JRTCKXETXF': [Object] } },
+  version: '20220215164030',
+  publicationDate: '2022-02-15T16:40:30Z'
+}
+,
+
+{
+  product: {
+    productFamily: 'DDB-Operation-ReplicatedWrite',
+    attributes: {
+      regionCode: 'us-east-1',
+      servicecode: 'AmazonDynamoDB',
+      groupDescription: 'DynamoDB Provisioned Replicated Write Units',
+      usagetype: 'ReplWriteCapacityUnit-Hrs',
+      locationType: 'AWS Region',
+      location: 'US East (N. Virginia)',
+      servicename: 'Amazon DynamoDB',
+      operation: 'CommittedThroughput',
+      group: 'DDB-ReplicatedWriteUnits'
+    },
+    sku: 'QM7WV2JADZJDV45W'
+  },
+  serviceCode: 'AmazonDynamoDB',
+  terms: { OnDemand: { 'QM7WV2JADZJDV45W.JRTCKXETXF': [Object] } },
+  version: '20220215164030',
+  publicationDate: '2022-02-15T16:40:30Z'
+}
+,
+
+{
+  product: {
+    productFamily: 'Provisioned IOPS',
+    attributes: {
+      regionCode: 'us-east-1',
+      servicecode: 'AmazonDynamoDB',
+      groupDescription: 'DynamoDB Provisioned Write Units',
+      usagetype: 'WriteCapacityUnit-Hrs',
+      locationType: 'AWS Region',
+      location: 'US East (N. Virginia)',
+      servicename: 'Amazon DynamoDB',
+      operation: 'CommittedThroughput',
+      group: 'DDB-WriteUnits'
+    },
+    sku: 'R6PXMNYCEDGZ2EYN'
+  },
+  serviceCode: 'AmazonDynamoDB',
+  terms: {
+    OnDemand: { 'R6PXMNYCEDGZ2EYN.JRTCKXETXF': [Object] },
+    Reserved: {
+      'R6PXMNYCEDGZ2EYN.VG8YD49WWM': [Object],
+      'R6PXMNYCEDGZ2EYN.YTVHEVGPBZ': [Object]
+    }
+  },
+  version: '20220215164030',
+  publicationDate: '2022-02-15T16:40:30Z'
+}
+,
+
+{
+  product: {
+    productFamily: 'Database Storage',
+    attributes: {
+      volumeType: 'Amazon DynamoDB - Point-In-Time-Restore (PITR) Backup Storage',
+      regionCode: 'us-east-1',
+      servicecode: 'AmazonDynamoDB',
+      usagetype: 'USE1-TimedPITRStorage-ByteHrs',
+      locationType: 'AWS Region',
+      location: 'US East (N. Virginia)',
+      servicename: 'Amazon DynamoDB',
+      operation: ''
+    },
+    sku: 'TFXQN9PEG62G7A67'
+  },
+  serviceCode: 'AmazonDynamoDB',
+  terms: { OnDemand: { 'TFXQN9PEG62G7A67.JRTCKXETXF': [Object] } },
+  version: '20220215164030',
+  publicationDate: '2022-02-15T16:40:30Z'
+}
+,
+
+{
+  product: {
+    productFamily: 'Amazon DynamoDB PayPerRequest Throughput',
+    attributes: {
+      regionCode: 'us-east-1',
+      servicecode: 'AmazonDynamoDB',
+      groupDescription: 'DynamoDB PayPerRequest Read Request Units IA',
+      usagetype: 'IA-ReadRequestUnits',
+      locationType: 'AWS Region',
+      location: 'US East (N. Virginia)',
+      servicename: 'Amazon DynamoDB',
+      operation: 'PayPerRequestThroughput',
+      group: 'DDB-ReadUnitsIA'
+    },
+    sku: 'YR9NFVSXEN3QWYDU'
+  },
+  serviceCode: 'AmazonDynamoDB',
+  terms: { OnDemand: { 'YR9NFVSXEN3QWYDU.JRTCKXETXF': [Object] } },
+  version: '20220215164030',
+  publicationDate: '2022-02-15T16:40:30Z'
+}
+,
+
+{
+  product: {
+    productFamily: 'Amazon DynamoDB Restore Data Size',
+    attributes: {
+      volumeType: 'Amazon DynamoDB - Backup Restore Size',
+      regionCode: 'us-east-1',
+      servicecode: 'AmazonDynamoDB',
+      usagetype: 'USE1-RestoreDataSize-Bytes',
+      locationType: 'AWS Region',
+      location: 'US East (N. Virginia)',
+      servicename: 'Amazon DynamoDB',
+      operation: ''
+    },
+    sku: 'Z79SYD7KXFPZZ9SF'
+  },
+  serviceCode: 'AmazonDynamoDB',
+  terms: { OnDemand: { 'Z79SYD7KXFPZZ9SF.JRTCKXETXF': [Object] } },
+  version: '20220215164030',
+  publicationDate: '2022-02-15T16:40:30Z'
+}
+,
+

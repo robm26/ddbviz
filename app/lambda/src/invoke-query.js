@@ -3,25 +3,25 @@ import { LambdaClient, InvokeCommand } from "@aws-sdk/client-lambda";
 
 import {handler} from './index.js';
 
-const region       = 'us-east-2'; //  DDB target region
+const region       = 'us-west-2'; //  DDB target region
 
 const lambdaRegion = 'us-west-1';
 
 const requestBody = {
     'Region': region,
-    'TableName': 'Customer360',
+    'TableName': 'DemoTable04',
     'ActionName': 'query',
-    'PkName': 'pkey1',
-    'PkValue': 'SUPPORT',
-    'SkName': 'skey1',
-    'SkValue': '20191107',
+    'PkName': 'product',
+    'PkValue': 'Car',
+    'SkName': 'rating',
+    'SkValue': '<17.55',
+    'SkValueType' : 'N',
     'ScanCount': 10,
     'ScanLimit': 10,
     'ReturnFormat': 'both'
 };
 
-requestBody.IndexName = 'gsi1';
-
+requestBody.IndexName = 'GSI1';
 
 const executeFunction = async (requestBody) => {
 

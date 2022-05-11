@@ -17,49 +17,50 @@ export async function action({ request }) {
     const sqlStmt = body?._fields['sqlText'][0];
 
     const result = await runSql(sqlStmt);
+    // console.log({result:result});
 
     return({result: result});
-
 }
 
 export const loader = async ({ params, request }) => {
-    // const url = new URL(request.url);
-    //
-    // const stmt = 'SELECT * FROM customer_features.v_features limit 7';
-    //
-    // // console.log(url);
-    // const result = await runSql(stmt);
-    // console.log('***** result ' + Object.keys(result));
-    console.log(params);
-
     return {
         region:params.region,
-        // result:result,
-        // url:request.url,
         database:database,
         host:host
     };
-
 };
 
-// const handleSqlRun = async (stmt) => {
-//     const result = await runSql(sql);
-//     return result;
-// };
 
 export default function SqlIndex() {
     const data = useLoaderData();
-    const fetcher = useFetcher();
     const actionData = useActionData();
+    const keepfor = 365;
+    const ttl = '  unix_timestamp(date_add(now(),interval ' + keepfor + ' day)) as ttl\n';
+    // let stmt = 'SELECT customer_id, ' +
+    //     '"Luna" as customer_id, ' +
+    //     '\ncustomer_name, address, "Marco" as customer_id, ' +
+    //     '\nunix_timestamp(date_add(now(),interval 0 day)) as now_time, ' +
+    //     '\nunix_timestamp(date_add(now(),interval ' + keepfor + ' day)) as ttl_' + keepfor +
+    //     '\nFROM customers \nlimit 3';
 
-
-    let stmt = 'SELECT * \nFROM v_features \nlimit 30';
+    let stmt = '(select \n' +
+        '  \'customer\'     as type,\n' +
+        '  customer_id    as "c.customer_id", \n  customer_name  as "c.customer_name", \n  notes          as "c.notes",' +
+        '\n  null           as "o.order_id", \n  null           as "o.customer_id", \n  null           as "o.notes", \n' +
+        ttl +
+        'from customers c \nlimit 3) \n' +
+        '\n' +
+        'union all\n' +
+        '\n' +
+        '(select \n' +
+        '  \'order\'     as type,\n' +
+        '  null,\n  null,\n  null,\n' +
+        '  order_id,\n  customer_id,\n  notes, \n' +
+        ttl +
+        'from orders o \nlimit 3) \n';
 
     const [sql, setSql] = React.useState(stmt);
-    const [rows, setRows] = React.useState([]);
 
-    // const resList = (<ul>{Object.keys(data.result).map(item=>(<li>{item}</li>))} </ul>);
-    // console.log(data.result);
     const clearSql = () => {
         setSql('');
         return null;
@@ -68,6 +69,15 @@ export default function SqlIndex() {
     const handleSqlUpdate = (val) => {
         setSql(val.target.value);
     };
+
+    let rows = 0;
+    let cols = 0;
+    if(actionData?.result && !actionData?.result?.error) {
+        let dataset = actionData?.result;
+        rows = dataset.length;
+        cols = Object.keys(dataset[0]).length;
+        // console.log(JSON.stringify(dataset, null, 2));
+    }
 
     const sqlForm = (<Form method="post" action={'/' + data.region + '/sql'} >
         <table className='sqlTableForm'>
@@ -85,7 +95,10 @@ export default function SqlIndex() {
         <Link to={'.'} >
             <button type='submit' onClick={()=>{ clearSql() }} >CLEAR</button>
         </Link>
-
+            &nbsp; &nbsp; &nbsp;
+            {rows && rows > 0 ? (<span>rows: {rows}</span>) : null}
+            &nbsp;&nbsp;
+            {cols && cols > 0 ? (<span>columns: {cols}</span>) : null}
         </td></tr></tbody>
         </table>
     </Form>);
@@ -98,7 +111,12 @@ export default function SqlIndex() {
 
             <div className='sqlContainer'>
                 {sqlForm}
-                <SqlGrid data={actionData?.result} />
+                <br/>
+                {actionData?.result?.error ?
+                    (<div className='errorPanel'>{actionData.result.error?.code}<br/>{actionData.result.error?.sqlMessage}</div>)
+                    : ( <SqlGrid data={actionData?.result} />)
+                }
+
             </div>
 
         </div>

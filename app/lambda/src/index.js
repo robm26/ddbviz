@@ -33,6 +33,7 @@ export async function handler(event) {
 
     const SkName = event?.SkName;
     let SkValue = event?.SkValue;
+    let SkValueType = event?.SkValueType;
 
     const ScanCount = event?.ScanCount || 1;
     let ScanLimit = event?.ScanLimit;
@@ -110,10 +111,13 @@ export async function handler(event) {
 
                 let kceSort = " And #sk = :sk";
 
+                // console.log('typeof SkValue: ' + typeof SkValue);
+
                 if(['<','>'].includes(firstChar)) {
                     operator = firstChar;
                     kceSort = " And #sk " + operator + " :sk";
                     SkValue = SkValue.slice(1);
+                    SkType = SkValueType;
 
                 } else if ('*' === finalChar) {
                     kceSort = " And begins_with(#sk, :sk)";
@@ -125,6 +129,9 @@ export async function handler(event) {
                 ean["#sk"] = SkName;
 
                 eav[":sk"] = {};
+                // console.log('SkValue, type ' + SkValue.toString() + ' ' + typeof SkValue);
+                // console.log('SkType ' + SkType);
+
                 eav[":sk"][SkType] = SkType === 'S' ? SkValue : SkValue.toString();
 
                 if(params.Limit === 1 && firstChar === '<') {
@@ -247,7 +254,6 @@ export async function handler(event) {
                 MaxResults: 100
             };
 
-
             let NextToken = 'next';
 
             let allPrices = [];
@@ -361,45 +367,6 @@ export async function handler(event) {
             results = {'activeShards': activeShards};
 
         }
-
-        if(ActionName === 'sql') {
-            // const query = event?.Query;
-            // const host = event?.host;
-            // const user = event?.user;
-            // const password = event?.password;
-            // const database = event?.database;
-
-            // const conn = mysql.createConnection({
-            //     host: host,
-            //     user: user,
-            //     password: password,
-            //     database: database
-            // });
-
-            const rdsParams = {
-                secretArn: '[SecretARN]',
-                resourceArn: 'arn:aws:rds:us-east-1:589662381973:db:rmeg2skpwcsqx',
-                sql: 'SHOW TABLES;',
-                database: 'information_schema',
-                includeResultMetadata: true
-            };
-
-            const rdsCommand = new ExecuteStatementCommand(params);
-
-            try {
-                const data = await rdsDataClient.send(rdsCommand);
-            } catch (error) {
-
-            } finally {
-
-            }
-
-            results = data;
-
-            // results = await client.send(new ScanCommand(params));
-
-        }
-
 
         return results;
 

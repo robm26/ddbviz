@@ -84,7 +84,7 @@ export function StatsPanel(params) {
             return str.slice(0,16);
         }
         if(format === 2) {
-            console.log(str.slice(11,11));
+            // console.log(str.slice(11,11));
             return str.slice(11,16);
         }
 

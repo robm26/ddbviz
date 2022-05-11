@@ -10,34 +10,43 @@ export function SqlGrid(props) {
 
     const [colClick, setColClick] = React.useState(null);
 
+    let collectionNum = 0;
+    let lastKey;
 
     const sqlGrid = (<div className='sqlTableDiv' >
         <table className='sqlTable'>
-        {/*<colgroup>*/}
-        {/*    {columnNames.map((col, idx)=>{*/}
-        {/*        return (<col col={idx} key={idx}/>);*/}
-        {/*    })}*/}
-        {/*</colgroup>*/}
 
         <thead>
             <tr>{columnNames.map((col, indexC)=>{
-                return(<th key={indexC}
+
+                return(<th key={indexC} className={col.toLowerCase() === 'type' ? 'sqlType' : null}
                            highlight={colClick===indexC ? 'highlight' : null}
                            onClick={()=> {
-                    setColClick(colClick && colClick === indexC ? null : indexC);}}>{col}</th>);
+                    setColClick((colClick || colClick === 0) && colClick === indexC ? null : indexC);}}>{col}</th>);
             })}</tr>
         </thead>
         <tbody>
-        {rows.map((row, indexR)=>{
-            return(<tr key={indexR}>
-                {Object.keys(row).map((col, indexK)=>{
-                    return(<td key={indexK} highlight={colClick===indexK && (row[col] || row[col] === 0) ? 'highlight': null } className={row[col] === 0 || row[col] ? null : 'sqlNull'}>
-                        {row[col]}
-                    </td>);
-                })}
-            </tr>);
-        })}
+            {rows.map((row, indexR)=>{
 
+                if(row?.type && row.type !== lastKey) {
+                    collectionNum += 1;
+                    lastKey = row.type;
+                }
+
+                return(<tr key={indexR} >
+
+                    {Object.keys(row).map((col, indexK)=>{
+
+                        return(<td key={indexK}
+                                   highlight={colClick===indexK && (row[col] || row[col] === 0) ? 'highlight': null }
+                                   className={row[col] === 0 || row[col] ? 'col-' + collectionNum : 'sqlNull'}
+                        >
+                            {row[col]}
+
+                        </td>);
+                    })}
+                </tr>);
+            })}
         </tbody>
     </table>
         <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
