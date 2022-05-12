@@ -8,3 +8,7 @@ public/
 ssh.sh
 scratch/
 app/lambda/index.zip
+app/lambda/src/invoke*
+.gitignore
+.DS_Store
+app/.DS_Store

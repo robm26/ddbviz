@@ -1,0 +1,14 @@
+{ "TableName": "DemoTable02",
+  "Tags": [{"Key": "table_name", "Value": "DemoTable02"}],
+  "ProvisionedThroughput": {"WriteCapacityUnits": 10, "ReadCapacityUnits": 10},
+  "AttributeDefinitions": [
+      {"AttributeName": "PK", "AttributeType": "S"},
+      {"AttributeName": "SK", "AttributeType": "S"}
+
+    ],
+   "KeySchema": [{"KeyType": "HASH", "AttributeName": "PK"}, {"KeyType": "RANGE", "AttributeName": "SK"}],
+   "StreamSpecification": {
+      "StreamEnabled": true,
+      "StreamViewType": "NEW_AND_OLD_IMAGES"
+   }
+}

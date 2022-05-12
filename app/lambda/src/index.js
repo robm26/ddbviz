@@ -14,9 +14,6 @@ import { CloudWatchClient, GetMetricDataCommand } from "@aws-sdk/client-cloudwat
 
 import { PricingClient, GetProductsCommand } from "@aws-sdk/client-pricing";
 
-import { RDSDataClient, ExecuteStatementCommand } from "@aws-sdk/client-rds-data";
-
-
 export async function handler(event) {
 
     const Region = event?.Region || 'us-east-1';
@@ -76,11 +73,6 @@ export async function handler(event) {
         //     secretAccessKey: "yyy",
         // }
     });
-
-
-    // a client can be shared by different commands.
-    const rdsDataClient = new RDSDataClient({ region: Region });
-
 
     try {
         let results;

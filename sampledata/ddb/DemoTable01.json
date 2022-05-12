@@ -1,0 +1,10 @@
+{ "TableName": "DemoTable01",
+  "Tags": [{"Key": "table_name", "Value": "DemoTable01"}],
+  "ProvisionedThroughput": {"WriteCapacityUnits": 5, "ReadCapacityUnits": 5},
+  "AttributeDefinitions": [
+      {"AttributeName": "PK", "AttributeType": "S"},
+      {"AttributeName": "SK", "AttributeType": "S"}
+
+    ],
+   "KeySchema": [{"KeyType": "HASH", "AttributeName": "PK"}, {"KeyType": "RANGE", "AttributeName": "SK"}]
+}

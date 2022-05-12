@@ -1,0 +1,81 @@
+{ "TableName": "DemoTable09",
+  "Tags": [{"Key": "table_name", "Value": "DemoTable09"}],
+  "BillingMode": "PAY_PER_REQUEST",
+  "AttributeDefinitions": [
+      {"AttributeName": "PK", "AttributeType": "S"},
+      {"AttributeName": "SK", "AttributeType": "N"},
+      {"AttributeName": "city", "AttributeType": "S"},
+      {"AttributeName": "balance", "AttributeType": "N"},
+      {"AttributeName": "product", "AttributeType": "S"},
+      {"AttributeName": "date", "AttributeType": "S"},
+      {"AttributeName": "status", "AttributeType": "S"},
+      {"AttributeName": "premium", "AttributeType": "S"}
+    ],
+   "KeySchema": [{"KeyType": "HASH", "AttributeName": "PK"}, {"KeyType": "RANGE", "AttributeName": "SK"}],
+   "GlobalSecondaryIndexes": [
+        {
+            "IndexName": "GSI1",
+            "KeySchema": [{ "AttributeName": "city", "KeyType": "HASH" }],
+            "Projection": {
+              "ProjectionType": "KEYS_ONLY"
+            }
+        },
+       {
+            "IndexName": "GSI2",
+            "KeySchema": [{ "AttributeName": "city", "KeyType": "HASH" },
+                          { "AttributeName": "status", "KeyType": "RANGE" }],
+            "Projection": {
+              "ProjectionType": "INCLUDE",
+              "NonKeyAttributes": ["date", "rating","product"]
+            }
+        },
+        {
+            "IndexName": "GSI3",
+            "KeySchema": [{ "AttributeName": "city", "KeyType": "HASH" }],
+            "Projection": {
+              "ProjectionType": "INCLUDE",
+              "NonKeyAttributes": ["date", "rating"]
+            }
+        },
+        {
+            "IndexName": "GSI4",
+            "KeySchema": [{ "AttributeName": "product", "KeyType": "HASH" },
+                          { "AttributeName": "date", "KeyType": "RANGE" }],
+            "Projection": {"ProjectionType": "ALL"}
+        },
+        {
+            "IndexName": "GSI5",
+            "KeySchema": [
+              { "AttributeName": "premium", "KeyType": "HASH" }],
+            "Projection": {"ProjectionType": "ALL"}
+        },
+        {
+            "IndexName": "GSI6",
+            "KeySchema": [
+              { "AttributeName": "SK", "KeyType": "HASH" },
+              { "AttributeName": "PK", "KeyType": "RANGE" }],
+            "Projection": {"ProjectionType": "ALL"}
+        },
+        {
+            "IndexName": "GSI7",
+            "KeySchema": [
+              { "AttributeName": "PK", "KeyType": "HASH" },
+              { "AttributeName": "premium", "KeyType": "RANGE" }],
+            "Projection": {"ProjectionType": "KEYS_ONLY"}
+        },
+        {
+            "IndexName": "GSI8",
+            "KeySchema": [
+              { "AttributeName": "city", "KeyType": "HASH" },
+              { "AttributeName": "balance", "KeyType": "RANGE" }],
+            "Projection": {"ProjectionType": "KEYS_ONLY"}
+        },
+        {
+            "IndexName": "GSI9",
+            "KeySchema": [
+              { "AttributeName": "balance", "KeyType": "HASH" },
+              { "AttributeName": "city", "KeyType": "RANGE" }],
+            "Projection": {"ProjectionType": "KEYS_ONLY"}
+        }
+   ]
+}

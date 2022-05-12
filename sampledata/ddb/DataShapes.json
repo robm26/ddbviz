@@ -1,0 +1,28 @@
+{
+  "shapes": [
+    {
+      "table_name": "DemoTable04",
+      "partition_count": 10,
+      "items_per_partition": 5,
+      "payload_size": 0.5,
+      "pk_prefix": "cust-",
+      "sk_prefix": "quote-"
+    },
+    {
+      "table_name": "DemoTable04",
+      "partition_count": 5,
+      "items_per_partition": 3,
+      "payload_size": 7.5,
+      "pk_prefix": "cust-",
+      "sk_prefix": "order-"
+    },
+    {
+      "table_name": "DemoTable04",
+      "partition_count": 2,
+      "items_per_partition": 2,
+      "payload_size": 48,
+      "pk_prefix": "cust-",
+      "sk_prefix": "delivery-"
+    }
+  ]
+}

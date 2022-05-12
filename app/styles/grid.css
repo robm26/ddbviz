@@ -269,7 +269,8 @@
 }
 
 .sqlTable [highlight='highlight'] {
-    background-color: sandybrown;
+    border:2px solid red;
+
 }
 
 .sqlTableDiv {
@@ -283,12 +284,28 @@
 
 .sqlTable tr:hover td:empty {
     background-color: whitesmoke;
-    /*border-top:2px solid red;*/
-    /*border-bottom:2px solid red;*/
 }
 .sqlTable tr:hover td {
-    background-color: lightskyblue;
+    filter: brightness(110%);
+}
 
-    /*border-top:2px solid red;*/
-    /*border-bottom:2px solid red;*/
+.sqlType {
+    background-color: yellow;
+}
+
+.col-1  {
+    background-color: lavender;
+
+}
+.col-2  {
+    background-color: lemonchiffon;
+}
+.col-3  {
+    background-color: mistyrose;
+}
+.col-4  {
+    background-color: white;
+}
+.col-5  {
+    background-color: beige;
 }

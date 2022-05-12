@@ -1,0 +1,38 @@
+{ "TableName": "DemoTable04",
+  "Tags": [{"Key": "table_name", "Value": "DemoTable04"}],
+  "ProvisionedThroughput": {"WriteCapacityUnits": 10, "ReadCapacityUnits": 10},
+  "AttributeDefinitions": [
+      {"AttributeName": "PK", "AttributeType": "S"},
+      {"AttributeName": "SK", "AttributeType": "S"},
+      {"AttributeName": "status", "AttributeType": "S"},
+      {"AttributeName": "product", "AttributeType": "S"},
+      {"AttributeName": "premium", "AttributeType": "S"},
+      {"AttributeName": "date", "AttributeType": "S"},
+      {"AttributeName": "rating", "AttributeType": "N"}
+  ],
+   "KeySchema": [{"KeyType": "HASH", "AttributeName": "PK"}, {"KeyType": "RANGE", "AttributeName": "SK"}],
+   "GlobalSecondaryIndexes": [
+        {
+            "IndexName": "GSI1",
+            "KeySchema": [{ "AttributeName": "product", "KeyType": "HASH" },{ "AttributeName": "rating", "KeyType": "RANGE" }],
+            "Projection": {"ProjectionType": "ALL"},
+            "ProvisionedThroughput": { "ReadCapacityUnits": 5, "WriteCapacityUnits": 5 }
+        },
+       {
+            "IndexName": "GSI2",
+            "KeySchema": [{ "AttributeName": "status", "KeyType": "HASH" },{ "AttributeName": "date", "KeyType": "RANGE" }],
+            "Projection": {"ProjectionType": "ALL"},
+            "ProvisionedThroughput": { "ReadCapacityUnits": 5, "WriteCapacityUnits": 5 }
+        },
+       {
+            "IndexName": "GSI3",
+            "KeySchema": [{ "AttributeName": "premium", "KeyType": "HASH" }],
+            "Projection": {"ProjectionType": "ALL"},
+            "ProvisionedThroughput": { "ReadCapacityUnits": 5, "WriteCapacityUnits": 5 }
+        }
+   ],
+   "StreamSpecification": {
+      "StreamEnabled": true,
+      "StreamViewType": "NEW_AND_OLD_IMAGES"
+   }
+}

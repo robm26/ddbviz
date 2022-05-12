@@ -1,0 +1,38 @@
+{ "TableName": "DemoTable07",
+  "Tags": [{"Key": "table_name", "Value": "DemoTable07"}],
+  "BillingMode": "PAY_PER_REQUEST",
+  "AttributeDefinitions": [
+      {"AttributeName": "PK", "AttributeType": "S"},
+      {"AttributeName": "SK", "AttributeType": "S"},
+      {"AttributeName": "city", "AttributeType": "S"},
+      {"AttributeName": "date", "AttributeType": "S"},
+      {"AttributeName": "product", "AttributeType": "S"},
+      {"AttributeName": "status", "AttributeType": "S"},
+      {"AttributeName": "balance", "AttributeType": "N"}
+  ],
+
+   "KeySchema": [{"KeyType": "HASH", "AttributeName": "PK"}, {"KeyType": "RANGE", "AttributeName": "SK"}],
+   "GlobalSecondaryIndexes": [
+        {
+            "IndexName": "GSI1",
+            "KeySchema": [{ "AttributeName": "city", "KeyType": "HASH" },{ "AttributeName": "date", "KeyType": "RANGE" }],
+            "Projection": {"ProjectionType": "ALL"}
+        },
+        {
+            "IndexName": "GSI2",
+            "KeySchema": [{ "AttributeName": "product", "KeyType": "HASH" },{ "AttributeName": "status", "KeyType": "RANGE" }],
+            "Projection": {
+              "ProjectionType": "INCLUDE",
+              "NonKeyAttributes": ["date", "rating","product"]
+            }
+        },
+        {
+            "IndexName": "GSI3",
+            "KeySchema": [{ "AttributeName": "PK", "KeyType": "HASH" },{ "AttributeName": "balance", "KeyType": "RANGE" }],
+            "Projection": {
+              "ProjectionType": "INCLUDE",
+              "NonKeyAttributes": ["date","product","status"]
+            }
+        }
+   ]
+}
