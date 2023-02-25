@@ -71,7 +71,7 @@ export const loader = async ({ params, request }) => {
 
     // console.log('Prices in region ' + params.region);
 
-    let plKeys = Object.keys(prices.PriceList).sort();
+    // let plKeys = Object.keys(prices.PriceList).sort();
 
     // plKeys.map((key, index) => {
     //    console.log((index + ' ' + key + '                ').slice(0,31) + ' ' + prices.PriceList[key] );

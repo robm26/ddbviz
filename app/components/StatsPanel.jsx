@@ -89,8 +89,10 @@ export function StatsPanel(params) {
         }
 
     }
+    console.log('statsCount: ', statsCount);
 
     if(statsCount > 0) {
+
 
         chartData.labels = stats[0].Timestamps.reverse().map(dt=>formatDate(dt,2));
 

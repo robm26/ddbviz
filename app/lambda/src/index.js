@@ -270,9 +270,7 @@ export async function handler(event) {
                 }
             }
 
-
             const priceBook = {};
-
 
             allPrices.map((offerTxt, index)=> {
 

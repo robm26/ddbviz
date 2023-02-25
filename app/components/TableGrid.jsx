@@ -109,14 +109,29 @@ export function TableGrid(props) {
         // console.log(' ----- ' + Object.keys(pricer));
         // console.log('-TimedStorage-ByteHrs ['+priceRegion+']: ' + pricer[priceRegion + 'TimedStorage-ByteHrs']);
 
-        let StorageCostStd = TotalSizeMB * pricer[priceRegion + 'TimedStorage-ByteHrs'] / 1024;
-        let StorageCostIA = TotalSizeMB * pricer[priceRegion + 'IA-TimedStorage-ByteHrs'] / 1024;
 
-        let ReadCostStd = ProvisionedRCU * pricer[priceRegion + 'ReadCapacityUnit-Hrs'] * 24 * 30;
-        let ReadCostIA = ProvisionedRCU * pricer[priceRegion + 'IA-ReadCapacityUnit-Hrs'] * 24 * 30;
+        let StorageCostStd = 0;
+        let StorageCostIA = 0;
 
-        let WriteCostStd = ProvisionedWCU * pricer[priceRegion + 'WriteCapacityUnit-Hrs'] * 24 * 30;
-        let WriteCostIA = ProvisionedWCU * pricer[priceRegion + 'IA-WriteCapacityUnit-Hrs'] * 24 * 30;
+        let ReadCostStd = 0;
+        let ReadCostIA = 0;
+
+        let WriteCostStd = 0;
+        let WriteCostIA = 0;
+
+        // update if pricing API data available
+
+        if(pricer && pricer[priceRegion + 'TimedStorage-ByteHrs']) {
+            StorageCostStd = TotalSizeMB * pricer[priceRegion + 'TimedStorage-ByteHrs'] / 1024;
+            StorageCostIA = TotalSizeMB * pricer[priceRegion + 'IA-TimedStorage-ByteHrs'] / 1024;
+
+            ReadCostStd = ProvisionedRCU * pricer[priceRegion + 'ReadCapacityUnit-Hrs'] * 24 * 30;
+            ReadCostIA = ProvisionedRCU * pricer[priceRegion + 'IA-ReadCapacityUnit-Hrs'] * 24 * 30;
+
+            WriteCostStd = ProvisionedWCU * pricer[priceRegion + 'WriteCapacityUnit-Hrs'] * 24 * 30;
+            WriteCostIA = ProvisionedWCU * pricer[priceRegion + 'IA-WriteCapacityUnit-Hrs'] * 24 * 30;
+        }
+
 
         let TotalCostStd = 0;
         let TotalCostIA = 0;

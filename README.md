@@ -11,23 +11,31 @@ This tool allows you to click to an AWS region and see a smart grid
 of all your DynamoDB tables.  Table sizes, configuration settings, and costs
 are shown in sortable columns, allowing you to spot the tables with the biggest costs.
 
-For tables with a high storage size relative to read and write capacity, the tool will 
-calculate the potential savings if the table were converted to 
-[DynamoDB Infrequent Access](https://aws.amazon.com/dynamodb/standard-ia/).  This is a mode that charges less for storage but
-more for read and write operations, and is perfect for reducing
- the total monthly cost of huge tables with low activity.
+
+### Item Browser
+You can click on a table name to open a panel with your table's GSI list, a scan button, and a query form.
+Scan to show your items' attributes styled and organized in schemaless mode, grid mode, or summarized.
+Hover over each GSI name and the item grid reacts by illuminating the GSI's sparcity and projection.
+Select the GSI and scan again to see the GSI's collections.
+Partition and sort key values are clickable. 
+
+Color legend:
+
+<span style="background-color:dodgerblue; padding:5px;">Partition Key</span> <span style="background-color:darkgreen; padding:5px;">Sort Key</span>
+
+<span style="background-color:darkorchid; padding:5px;">GSI Partition Key</span> <span style="background-color:goldenrod; padding:5px;">GSI Sort Key</span>
 
 
 ### Prerequisites
  * An AWS account with DynamoDB tables
  * AWS CLI setup and configured with DynamoDB permissions
- * Node.JS with the ```aws-sdk``` installed
+ * Node.JS with the ```aws-sdk```  v3 installed
  * [Remix.run](https://remix.run) installed
  
  
 ## Setup
 
-You can setup this webapp yourself on your laptop or in the 
+You can run this webapp on your laptop or in the 
 AWS Cloud9 environment.
 
 1. Clone the repository to your laptop 
@@ -49,6 +57,8 @@ or you can choose localhost:8000 to use DynamoDB Local.
 1. Review the final columns which calculate and compare the 
 monthly table costs in Standard and Infrequent Access (IA) modes.
 1. If a table may benefit from IA, the monthly savings will be shown in green.
+
+
 
 
 ## Note
